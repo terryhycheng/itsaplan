@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/terryhycheng/itsaplan/compare/v1.0.0...v1.1.0) (2026-09-17)
+
+
+### Features
+
+* add personal activity scope to the pulse widget ([#384](https://github.com/terryhycheng/itsaplan/issues/384)) ([945fef2](https://github.com/terryhycheng/itsaplan/commit/945fef2858b42f0edc3564f8200c9ef82841b2c4))
+* add personal project navigation and discovery ([#365](https://github.com/terryhycheng/itsaplan/issues/365)) ([8c5cbdf](https://github.com/terryhycheng/itsaplan/commit/8c5cbdf5854367ffb9279597de1389d3d6483d2c))
+* improve Docs navigation and collaborative editing ([#386](https://github.com/terryhycheng/itsaplan/issues/386)) ([0ff436b](https://github.com/terryhycheng/itsaplan/commit/0ff436b1982e15175c9068cb04c8c62a26e20be1))
+* open sign-up on a fresh instance and offer a data reset in setup ([#410](https://github.com/terryhycheng/itsaplan/issues/410)) ([1a74321](https://github.com/terryhycheng/itsaplan/commit/1a743218fd0ff09714ee8acb71ccbc07b76483a2))
+
+
+### Bug Fixes
+
+* **charts:** use quay.io MinIO images in Helm chart values ([#405](https://github.com/terryhycheng/itsaplan/issues/405)) ([e55907e](https://github.com/terryhycheng/itsaplan/commit/e55907eb8b68fdc9acf237e35ddc9b937c5d40da))
+* **web:** keep dashboard overview accessible ([#385](https://github.com/terryhycheng/itsaplan/issues/385)) ([9bbf0aa](https://github.com/terryhycheng/itsaplan/commit/9bbf0aa81e49f03e094b56b65d28e9dc318743e5))
+* **web:** restore image annotation on new and existing issues ([#407](https://github.com/terryhycheng/itsaplan/issues/407)) ([63c41cd](https://github.com/terryhycheng/itsaplan/commit/63c41cd2aee6ead486c58d3ba9a308bfe309e162))
+
 ## [1.0.0](https://github.com/croffasia/itsaplan/compare/v0.17.0...v1.0.0) (2026-09-15)
 
 
