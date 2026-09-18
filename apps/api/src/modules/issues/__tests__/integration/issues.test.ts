@@ -33,6 +33,16 @@ function createIssue(client: Api, columnId: number, patch: Record<string, unknow
   return client.projects({ projectKey: 'MKT' }).issues.post({ columnId, title: 'Task', ...patch });
 }
 
+function day(offset: number) {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + offset);
+  return date.toISOString().slice(0, 10);
+}
+
+function dateOnly(value: string | null | undefined) {
+  return value == null ? value : new Date(value).toISOString().slice(0, 10);
+}
+
 // A label of a second project, which no issue of the first one may carry.
 async function foreignLabel(client: Api) {
   await client.projects.post({ key: 'OPS', name: 'Operations' });
@@ -332,6 +342,73 @@ describe('issues', () => {
       const issue = (await createIssue(asOwner, columnId, { dueDate: '2026-08-30' })).data!;
       const res = await asOwner.issues({ issueId: issue.id }).patch({ startDate: '2026-09-08' });
       expect(res.status).toBe(400);
+    });
+
+    it('uses a cycle date range when assigning an issue and when the cycle changes', async () => {
+      const { asOwner, columnId } = await setupProject();
+      const firstStart = day(7);
+      const firstEnd = day(18);
+      const secondStart = day(14);
+      const secondEnd = day(25);
+      const cycle = (
+        await asOwner.projects({ projectKey: 'MKT' }).cycles.post({
+          name: 'Sprint',
+          startDate: firstStart,
+          endDate: firstEnd,
+        })
+      ).data!;
+      const issue = (
+        await createIssue(asOwner, columnId, {
+          startDate: '2026-01-01',
+          dueDate: '2026-01-02',
+        })
+      ).data!;
+
+      const assigned = await asOwner.issues({ issueId: issue.id }).patch({ cycleId: cycle.id });
+      expect(assigned.status).toBe(200);
+      expect(dateOnly(assigned.data?.startDate)).toBe(firstStart);
+      expect(dateOnly(assigned.data?.dueDate)).toBe(firstEnd);
+
+      await asOwner.cycles({ cycleId: cycle.id }).patch({
+        startDate: secondStart,
+        endDate: secondEnd,
+      });
+      const updated = await asOwner.issues({ issueId: issue.id }).get();
+      expect(dateOnly(updated.data?.startDate)).toBe(secondStart);
+      expect(dateOnly(updated.data?.dueDate)).toBe(secondEnd);
+    });
+
+    it('derives a parent date range from its children', async () => {
+      const { asOwner, columnId } = await setupProject();
+      const parent = (await createIssue(asOwner, columnId)).data!;
+      const first = (
+        await createIssue(asOwner, columnId, {
+          parentId: parent.id,
+          startDate: '2026-04-06',
+          dueDate: '2026-04-17',
+        })
+      ).data!;
+      const second = (
+        await createIssue(asOwner, columnId, {
+          parentId: parent.id,
+          startDate: '2026-04-01',
+          dueDate: '2026-04-24',
+        })
+      ).data!;
+
+      let updated = await asOwner.issues({ issueId: parent.id }).get();
+      expect(dateOnly(updated.data?.startDate)).toBe('2026-04-01');
+      expect(dateOnly(updated.data?.dueDate)).toBe('2026-04-24');
+
+      await asOwner.issues({ issueId: second.id }).patch({ parentId: null });
+      updated = await asOwner.issues({ issueId: parent.id }).get();
+      expect(dateOnly(updated.data?.startDate)).toBe('2026-04-06');
+      expect(dateOnly(updated.data?.dueDate)).toBe('2026-04-17');
+
+      await asOwner.issues({ issueId: first.id }).patch({ parentId: null });
+      updated = await asOwner.issues({ issueId: parent.id }).get();
+      expect(updated.data?.startDate).toBeNull();
+      expect(updated.data?.dueDate).toBeNull();
     });
   });
 

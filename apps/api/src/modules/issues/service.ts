@@ -70,6 +70,7 @@ import { cycleStatus, getCycleRef, type CycleStatus } from '#modules/cycles/serv
 import { getMembership } from '#modules/members/service';
 import { enqueueAgentRun } from '#modules/agents/core/run-queue';
 import { applySubtaskAutomation } from './automation';
+import { syncParentDates } from './parent-dates';
 import { assertWipLimit, columnAutoAssignee, wipLimitBreach } from '#modules/columns/service';
 
 // Data access for issues and their per-issue data: labels, custom field values,
@@ -739,13 +740,14 @@ async function assertCycle(
   projectId: number,
   cycleId: number | null | undefined,
   currentCycleId: number | null = null,
-): Promise<void> {
-  if (cycleId == null || cycleId === currentCycleId) return;
+): Promise<{ startDate: string; dueDate: string } | null> {
+  if (cycleId == null || cycleId === currentCycleId) return null;
   await assertProjectFeature(projectId, 'cycles');
   const ref = await getCycleRef(cycleId);
   if (!ref || ref.projectId !== projectId)
     throw new HttpError(400, 'Cycle must belong to this project');
   if (ref.status === 'completed') throw new HttpError(400, 'A completed cycle takes no new issues');
+  return { startDate: ref.startDate, dueDate: ref.endDate };
 }
 
 // Enforces that a column belongs to the issue's project — issue.column_id only
@@ -839,12 +841,12 @@ export async function createIssue(
 ): Promise<IssueRow> {
   await assertAssignments(project.id, input);
   await assertInitiative(project.id, input.initiativeId);
-  await assertCycle(project.id, input.cycleId);
+  const cycleDates = await assertCycle(project.id, input.cycleId);
   await assertColumn(project.id, input.columnId);
   await assertWipLimit(input.columnId);
   await assertIssueType(project.id, input.typeId);
   await assertParent(project.id, null, input.parentId);
-  assertDateOrder(input.startDate, input.dueDate);
+  assertDateOrder(cycleDates?.startDate ?? input.startDate, cycleDates?.dueDate ?? input.dueDate);
   // Also checked by setIssueLabels below, but here it fails before the issue exists.
   await assertIssueLabels(project.id, input.labelIds);
   // An issue created in a column enters it the same way a moved one does, so the
@@ -878,8 +880,8 @@ export async function createIssue(
         priority: input.priority ?? null,
         estimatePoints: input.estimatePoints == null ? null : String(input.estimatePoints),
         estimateMinutes: input.estimateMinutes ?? null,
-        startDate: input.startDate ?? null,
-        dueDate: input.dueDate ?? null,
+        startDate: cycleDates?.startDate ?? input.startDate ?? null,
+        dueDate: cycleDates?.dueDate ?? input.dueDate ?? null,
         position: Number(posRow.pos),
       })
       .returning({ id: issue.id, createdAt: issue.createdAt });
@@ -892,6 +894,7 @@ export async function createIssue(
   await recordActivity(issueId, [{ action: 'created' }], actorUserId);
   if (input.cycleId != null) await recordCycleChange(issueId, null, input.cycleId);
   if (input.parentId != null) await recordParentChange(issueId, null, input.parentId, actorUserId);
+  if (input.parentId != null) await syncParentDates(input.parentId);
   // Suppress the label_changed event on creation — the initial labels are part of
   // the issue.created payload, so a separate change event would be redundant.
   if (input.labelIds?.length)
@@ -1009,15 +1012,15 @@ export async function updateIssue(
   const before = await loadSnapshot(id);
   if (!before) return null;
 
+  const cycleDates = await assertCycle(before.projectId, patch.cycleId, before.cycleId);
   // Each date is checked against the effective other one: a patch sets one date
   // and leaves the stored value of the other in force.
   assertDateOrder(
-    patch.startDate !== undefined ? patch.startDate : before.startDate,
-    patch.dueDate !== undefined ? patch.dueDate : before.dueDate,
+    cycleDates?.startDate ?? (patch.startDate !== undefined ? patch.startDate : before.startDate),
+    cycleDates?.dueDate ?? (patch.dueDate !== undefined ? patch.dueDate : before.dueDate),
   );
   await assertAssignments(before.projectId, patch);
   await assertInitiative(before.projectId, patch.initiativeId);
-  await assertCycle(before.projectId, patch.cycleId, before.cycleId);
   await assertColumn(before.projectId, patch.columnId);
   const movedToColumnId =
     patch.columnId !== undefined && patch.columnId !== before.columnId ? patch.columnId : null;
@@ -1053,8 +1056,13 @@ export async function updateIssue(
   if (patch.estimatePoints !== undefined)
     set.estimatePoints = patch.estimatePoints == null ? null : String(patch.estimatePoints);
   if (patch.estimateMinutes !== undefined) set.estimateMinutes = patch.estimateMinutes;
-  if (patch.startDate !== undefined) set.startDate = patch.startDate;
-  if (patch.dueDate !== undefined) set.dueDate = patch.dueDate;
+  if (cycleDates) {
+    set.startDate = cycleDates.startDate;
+    set.dueDate = cycleDates.dueDate;
+  } else {
+    if (patch.startDate !== undefined) set.startDate = patch.startDate;
+    if (patch.dueDate !== undefined) set.dueDate = patch.dueDate;
+  }
 
   const changed = Object.keys(set).length > 0;
   if (changed) {
@@ -1066,6 +1074,14 @@ export async function updateIssue(
     const updated = await db.update(issue).set(set).where(guard).returning({ id: issue.id });
     if (updated.length === 0) return getIssue(id);
   }
+  const datesChanged = cycleDates || patch.startDate !== undefined || patch.dueDate !== undefined;
+  if (patch.parentId !== undefined && before.parentId !== patch.parentId) {
+    if (before.parentId != null) await syncParentDates(before.parentId);
+    if (patch.parentId != null) await syncParentDates(patch.parentId);
+  } else if (before.parentId != null && datesChanged) {
+    await syncParentDates(before.parentId);
+  }
+  if (datesChanged && (await hasSubtasks(id))) await syncParentDates(id);
   const after = await getIssue(id);
   if (after) {
     const afterSnapshot = snapshot(after);
@@ -1116,7 +1132,12 @@ async function enqueueDelegateRun(after: IssueRow, actor?: ActivityActor): Promi
 export async function deleteIssue(issueId: number): Promise<AttachmentRow[] | null> {
   const result = await db.transaction(async (tx) => {
     const rows = await tx
-      .select({ projectId: issue.projectId, seq: issue.sequenceNumber, key: projectTable.key })
+      .select({
+        projectId: issue.projectId,
+        seq: issue.sequenceNumber,
+        key: projectTable.key,
+        parentId: issue.parentId,
+      })
       .from(issue)
       .innerJoin(projectTable, eq(projectTable.id, issue.projectId))
       .where(eq(issue.id, issueId));
@@ -1130,9 +1151,11 @@ export async function deleteIssue(issueId: number): Promise<AttachmentRow[] | nu
       attachments: attachmentRows.map(mapAttachment),
       projectId: rows[0].projectId,
       identifier: `${rows[0].key}-${rows[0].seq}`,
+      parentId: rows[0].parentId,
     };
   });
   if (!result) return null;
+  if (result.parentId != null) await syncParentDates(result.parentId);
   await emitWebhookEvent(result.projectId, 'issue.deleted', {
     id: issueId,
     identifier: result.identifier,

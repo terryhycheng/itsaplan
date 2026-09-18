@@ -1,6 +1,7 @@
 import { db, cycle, issue, projectColumn } from '@repo/db';
-import { and, asc, desc, eq, isNull, ne, sql, type SQL } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, isNull, ne, sql, type SQL } from 'drizzle-orm';
 import { HttpError, iso } from '#shared/lib';
+import { syncParentDates } from '#modules/issues/parent-dates';
 
 // Data access for cycles: a time-boxed period of work inside a project (a sprint).
 // Issues link to a cycle through issue.cycle_id. The status is derived from the
@@ -159,7 +160,7 @@ export async function getCycle(id: number): Promise<CycleRow | null> {
 // does not exist. What the checks on a cycle referenced by its own id read.
 export async function getCycleRef(
   id: number,
-): Promise<{ projectId: number; status: CycleStatus } | null> {
+): Promise<{ projectId: number; startDate: string; endDate: string; status: CycleStatus } | null> {
   const rows = await db
     .select({
       projectId: cycle.projectId,
@@ -173,6 +174,8 @@ export async function getCycleRef(
   return row
     ? {
         projectId: row.projectId,
+        startDate: row.startDate,
+        endDate: row.endDate,
         status: cycleStatus(row.startDate, row.endDate, row.completedAt),
       }
     : null;
@@ -278,6 +281,23 @@ export async function updateCycle(id: number, patch: CyclePatch): Promise<CycleR
   if (Object.keys(set).length > 0) {
     set.updatedAt = NOW;
     await db.update(cycle).set(set).where(eq(cycle.id, id));
+    if (movesStart || movesEnd) {
+      await db
+        .update(issue)
+        .set({
+          startDate: patch.startDate ?? before.startDate,
+          dueDate: patch.endDate ?? before.endDate,
+          updatedAt: NOW,
+        })
+        .where(eq(issue.cycleId, id));
+      const parents = await db
+        .selectDistinct({ id: issue.parentId })
+        .from(issue)
+        .where(and(eq(issue.cycleId, id), isNotNull(issue.parentId)));
+      for (const parent of parents) {
+        if (parent.id != null) await syncParentDates(parent.id);
+      }
+    }
   }
   return getCycle(id);
 }
