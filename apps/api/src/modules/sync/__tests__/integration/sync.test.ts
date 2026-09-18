@@ -102,6 +102,27 @@ describe('sync', () => {
   });
 
   describe('board scope', () => {
+    it('moves when an important date is created, updated, and deleted', async () => {
+      const { asOwner, projectId } = await setup();
+      const board = `board:${projectId}`;
+      const before = await rev(asOwner, board);
+
+      const importantDate = await asOwner
+        .projects({ projectKey: 'MKT' })
+        ['important-dates'].post({ name: 'Launch', date: '2026-10-15' });
+      const created = await rev(asOwner, board);
+      expect(created).not.toBe(before);
+
+      await asOwner['important-dates']({ importantDateId: importantDate.data!.id }).patch({
+        showOnTimeline: false,
+      });
+      const updated = await rev(asOwner, board);
+      expect(updated).not.toBe(created);
+
+      await asOwner['important-dates']({ importantDateId: importantDate.data!.id }).delete();
+      expect(await rev(asOwner, board)).not.toBe(updated);
+    });
+
     it('moves when an issue is created, edited, archived and deleted', async () => {
       const { asOwner, projectId, columnId } = await setup();
       const board = `board:${projectId}`;

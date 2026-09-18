@@ -17,6 +17,10 @@ import {
 } from '#modules/issues/links';
 import { getParentRef, listSubtasks, type IssueRef } from '#modules/issues/subtasks';
 import { applyFilters } from '#modules/views/filters';
+import {
+  listTimelineImportantDates,
+  type ImportantDateRow,
+} from '#modules/important-dates/service';
 
 // Public read-only sharing: an issue or a saved view carries an unguessable
 // share_token that, when set, makes it readable without a session through the
@@ -57,6 +61,7 @@ export interface SharedIssueBundle {
 
 export interface SharedViewBundle {
   project: ShareScaffold;
+  importantDates: ImportantDateRow[];
   view: {
     name: string;
     icon: string | null;
@@ -240,9 +245,10 @@ export async function getSharedView(token: string): Promise<SharedViewBundle | n
   if (!view) return null;
   const project = await getProjectById(view.projectId);
   if (!project) return null;
-  const [scaffold, issues] = await Promise.all([
+  const [scaffold, issues, importantDates] = await Promise.all([
     buildScaffold(project, view.shareExtended),
     listIssues(project),
+    listTimelineImportantDates(project.id),
   ]);
   // Apply the view's own filters here so the bundle carries only the issues the
   // view shows, not the whole project. A public link must not expose issues the
@@ -259,6 +265,7 @@ export async function getSharedView(token: string): Promise<SharedViewBundle | n
   const cards = await attachBoardLinks(visible, project.id);
   return {
     project: scaffold,
+    importantDates,
     // The filters stay on the server: they can name assignees, labels and custom
     // field values a link without `extended` withholds, and the bundle already
     // carries only the issues they match.

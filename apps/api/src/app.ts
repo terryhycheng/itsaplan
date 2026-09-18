@@ -115,6 +115,7 @@ export const app = new Elysia()
             description: 'Initiatives (issue groupings) and their activity feed',
           },
           { name: 'Cycles', description: 'Cycles (time-boxed periods of work) and their issues' },
+          { name: 'Important Dates', description: 'Important dates on project timelines' },
           { name: 'Attachments', description: 'Issue attachments and raw bytes' },
           {
             name: 'Chat attachments',

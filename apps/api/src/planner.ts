@@ -44,6 +44,7 @@ import { userPreferenceRoutes } from './modules/user-preferences';
 import { telegramRoutes } from './modules/telegram';
 import { syncRoutes } from './modules/sync';
 import { linkPreviewRoutes } from './modules/link-previews';
+import { importantDateRoutes } from './modules/important-dates';
 
 // The planner API: projects and their columns, issue types, labels, AI agents,
 // custom fields, issues, attachments, saved views, and actions. Mounted on the
@@ -101,6 +102,7 @@ export const planner = new Elysia({ name: 'planner' })
   .use(issueRoutes)
   .use(initiativeRoutes)
   .use(cycleRoutes)
+  .use(importantDateRoutes)
   .use(attachmentRoutes)
   .use(chatAttachmentRoutes)
   .use(importRoutes)

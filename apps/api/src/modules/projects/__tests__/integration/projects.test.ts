@@ -434,6 +434,38 @@ describe('projects', () => {
       });
     });
 
+    it('copies important dates with the configuration selection', async () => {
+      const { api } = await signUpClient();
+      await api.projects.post({ key: 'SRC', name: 'Source' });
+      const source = api.projects({ projectKey: 'SRC' })['important-dates'];
+      const visible = await source.post({ name: 'Launch', date: '2026-10-15' });
+      const hidden = await source.post({
+        name: 'Internal review',
+        date: '2026-10-01',
+        showOnTimeline: false,
+      });
+
+      await api.projects({ projectKey: 'SRC' }).copy.post({
+        key: 'DST',
+        name: 'Destination',
+        include: { configuration: true },
+      });
+
+      const copied = (await api.projects({ projectKey: 'DST' })['important-dates'].get()).data!;
+      expect(
+        copied.map(({ name, date, showOnTimeline }) => ({
+          name,
+          date: new Date(date).toISOString().slice(0, 10),
+          showOnTimeline,
+        })),
+      ).toEqual([
+        { name: 'Internal review', date: '2026-10-01', showOnTimeline: false },
+        { name: 'Launch', date: '2026-10-15', showOnTimeline: true },
+      ]);
+      expect(copied.map((date) => date.id)).not.toContain(visible.data!.id);
+      expect(copied.map((date) => date.id)).not.toContain(hidden.data!.id);
+    });
+
     it("remaps a saved view's filter ids to the copied project's entities", async () => {
       const { api } = await signUpClient();
       await api.projects.post({ key: 'SRC', name: 'Source' });

@@ -15,6 +15,7 @@ import {
   projectAction,
   webhook,
   projectSetting,
+  projectImportantDate,
 } from '@repo/db';
 import { and, eq, inArray, or } from 'drizzle-orm';
 import { HttpError } from '#shared/lib';
@@ -601,6 +602,19 @@ export async function copyProject(
       for (const s of settingRows) {
         if (s.key === GIT_SETTING_KEY) continue;
         await tx.insert(projectSetting).values({ projectId: proj.id, key: s.key, value: s.value });
+      }
+      const importantDateRows = await tx
+        .select()
+        .from(projectImportantDate)
+        .where(eq(projectImportantDate.projectId, sourceProjectId))
+        .orderBy(projectImportantDate.date, projectImportantDate.id);
+      for (const date of importantDateRows) {
+        await tx.insert(projectImportantDate).values({
+          projectId: proj.id,
+          name: date.name,
+          date: date.date,
+          showOnTimeline: date.showOnTimeline,
+        });
       }
     }
 

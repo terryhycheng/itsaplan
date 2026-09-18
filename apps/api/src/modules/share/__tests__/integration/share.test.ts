@@ -177,6 +177,27 @@ describe('share', () => {
       expect(shared.data.issues.map((i: { id: number }) => i.id)).toContain(issueId);
     });
 
+    it('includes timeline-visible important dates and omits hidden dates', async () => {
+      const { asOwner, token } = await sharedView();
+      const dates = asOwner.projects({ projectKey: 'MKT' })['important-dates'];
+      await dates.post({ name: 'Launch', date: '2026-10-15' });
+      await dates.post({
+        name: 'Internal review',
+        date: '2026-10-01',
+        showOnTimeline: false,
+      });
+
+      const shared = await api.share.view({ token }).get();
+      expect(shared.data.importantDates).toHaveLength(1);
+      expect(shared.data.importantDates[0]).toMatchObject({
+        name: 'Launch',
+        showOnTimeline: true,
+      });
+      expect(new Date(shared.data.importantDates[0].date).toISOString().slice(0, 10)).toBe(
+        '2026-10-15',
+      );
+    });
+
     // A view's filters are stored as an uninspected jsonb blob, so a condition can
     // reach the server-side engine without the values every value operator reads.
     it('serves a view whose filter condition carries no values', async () => {

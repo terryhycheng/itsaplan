@@ -133,6 +133,22 @@ export const project = pgTable('project', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
+export const projectImportantDate = pgTable(
+  'project_important_date',
+  {
+    id: serial('id').primaryKey(),
+    projectId: integer('project_id')
+      .notNull()
+      .references(() => project.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    date: date('date').notNull(),
+    showOnTimeline: boolean('show_on_timeline').notNull().default(true),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('project_important_date_project_date_idx').on(t.projectId, t.date, t.id)],
+);
+
 // Per-project key-value settings, mirroring app_setting but scoped to a project.
 // The value is a jsonb blob owned by whatever feature reads the key, so one table
 // backs many project settings (e.g. auto-archive thresholds under key
@@ -1464,6 +1480,22 @@ export const issueLink = pgTable(
   ],
 );
 
+export const issueUsefulLink = pgTable(
+  'issue_useful_link',
+  {
+    id: serial('id').primaryKey(),
+    issueId: integer('issue_id')
+      .notNull()
+      .references(() => issue.id, { onDelete: 'cascade' }),
+    url: text('url').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('issue_useful_link_issue_url_uq').on(t.issueId, t.url),
+    index('issue_useful_link_issue_created_idx').on(t.issueId, t.createdAt, t.id),
+  ],
+);
+
 // Who follows an issue. A watcher receives every notification the issue produces;
 // the assignment and mention notifications are addressed to one person and reach
 // them whether they watch it or not. `subscribed` false is an unsubscription: the
@@ -1540,9 +1572,15 @@ export const issueAttachment = pgTable(
     filename: text('filename').notNull(),
     contentType: text('content_type').notNull(),
     sizeBytes: bigint('size_bytes', { mode: 'number' }).notNull(),
+    isCover: boolean('is_cover').notNull().default(false),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index('issue_attachment_issue_idx').on(t.issueId)],
+  (t) => [
+    index('issue_attachment_issue_idx').on(t.issueId),
+    uniqueIndex('issue_attachment_cover_uq')
+      .on(t.issueId)
+      .where(sql`${t.isCover}`),
+  ],
 );
 
 export const issueDevelopmentLink = pgTable(
