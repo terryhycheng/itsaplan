@@ -15,6 +15,11 @@ import IssuePickerDialog from '@/components/common/overlay/IssuePickerDialog';
 import NewIssueModal from '../create/NewIssueModal';
 import { usePersistedOpen } from '../../hooks/usePersistedOpen';
 import { useSetIssueParent } from '../../services/subtasks.service';
+import {
+  canSelectIssueParent,
+  excludeParentCandidate,
+  parentSelectionVars,
+} from '../../utils/parentSelection';
 import IssueSectionHeading from './IssueSectionHeading';
 import IssueRefRow from './IssueRefRow';
 import { useTranslations } from 'next-intl';
@@ -45,10 +50,12 @@ export default function IssueSubtasksPanel({
   const canCreate = !readOnly && can('work_items', 'create');
   const [attaching, setAttaching] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [selectingParent, setSelectingParent] = useState(false);
   const { open, toggle } = usePersistedOpen('issue-subtasks-open');
   const setParent = useSetIssueParent();
 
   const parent = issue.parent;
+  const canSelectParent = canSelectIssueParent(issue, canEdit);
   if (readOnly && !parent && issue.subtasks.length === 0) return null;
 
   const progress = subtaskProgress(issue.subtasks, new Map(project.columns.map((c) => [c.id, c])));
@@ -108,6 +115,16 @@ export default function IssueSubtasksPanel({
           onToggle={toggle}
           tally={done}
         />
+        {open && parent && canSelectParent && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7"
+            onClick={() => setSelectingParent(true)}
+          >
+            {t('changeParent')}
+          </Button>
+        )}
         {open && !parent && canEdit && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -117,6 +134,11 @@ export default function IssueSubtasksPanel({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-44">
+              {canSelectParent && (
+                <DropdownMenuItem onSelect={() => setSelectingParent(true)}>
+                  {t('setParent')}
+                </DropdownMenuItem>
+              )}
               {canCreate && (
                 <DropdownMenuItem onSelect={() => setCreating(true)}>
                   {t('newSubtask')}
@@ -149,6 +171,20 @@ export default function IssueSubtasksPanel({
             setAttaching(false);
           }}
           onClose={() => setAttaching(false)}
+        />
+      )}
+
+      {selectingParent && (
+        <IssuePickerDialog
+          projectKey={project.project.key}
+          title={parent ? t('changeParent') : t('setParent')}
+          prompt={t('parentSearchPrompt')}
+          exclude={(hit) => excludeParentCandidate(issue.id, hit)}
+          onPick={(hit) => {
+            setParent.mutate(parentSelectionVars(project.project.key, issue, hit.id));
+            setSelectingParent(false);
+          }}
+          onClose={() => setSelectingParent(false)}
         />
       )}
 

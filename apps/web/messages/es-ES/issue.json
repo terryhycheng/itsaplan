@@ -188,6 +188,9 @@
   "subtasks": {
     "title": "Subtareas",
     "parent": "Padre",
+    "setParent": "Establecer padre",
+    "changeParent": "Cambiar padre",
+    "parentSearchPrompt": "Buscar tickets para usar como padre…",
     "newSubtask": "Nueva subtarea",
     "addExisting": "Añadir un ticket existente como subtarea",
     "empty": "Todavía no hay subtareas.",

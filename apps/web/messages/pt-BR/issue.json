@@ -188,6 +188,9 @@
   "subtasks": {
     "title": "Subtarefas",
     "parent": "Pai",
+    "setParent": "Definir pai",
+    "changeParent": "Alterar pai",
+    "parentSearchPrompt": "Buscar issues para usar como pai…",
     "newSubtask": "Nova subtarefa",
     "addExisting": "Adicionar uma issue existente como subtarefa",
     "empty": "Nenhuma subtarefa ainda.",

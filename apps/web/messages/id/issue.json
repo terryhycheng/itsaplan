@@ -188,6 +188,9 @@
   "subtasks": {
     "title": "Subtugas",
     "parent": "Induk",
+    "setParent": "Tetapkan induk",
+    "changeParent": "Ubah induk",
+    "parentSearchPrompt": "Cari issue untuk digunakan sebagai induk…",
     "newSubtask": "Subtugas baru",
     "addExisting": "Tambahkan issue yang ada sebagai subtugas",
     "empty": "Belum ada subtugas.",

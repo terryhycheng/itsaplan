@@ -188,6 +188,9 @@
   "subtasks": {
     "title": "Sous-tâches",
     "parent": "Parent",
+    "setParent": "Définir le parent",
+    "changeParent": "Changer de parent",
+    "parentSearchPrompt": "Rechercher un ticket à utiliser comme parent…",
     "newSubtask": "Nouvelle sous-tâche",
     "addExisting": "Ajouter un ticket existant comme sous-tâche",
     "empty": "Aucune sous-tâche pour l'instant.",

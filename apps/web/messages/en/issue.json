@@ -188,6 +188,9 @@
   "subtasks": {
     "title": "Subtasks",
     "parent": "Parent",
+    "setParent": "Set parent",
+    "changeParent": "Change parent",
+    "parentSearchPrompt": "Search issues to use as the parent…",
     "newSubtask": "New subtask",
     "addExisting": "Add an existing issue as a subtask",
     "empty": "No subtasks yet.",

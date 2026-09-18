@@ -76,7 +76,7 @@ export default function AgentInstructionsEditor({
   const t = useTranslations('common.editor');
   const editorRef = useRef<Editor | null>(null);
   const editor = useEditor({
-    immediatelyRender: false,
+    immediatelyRender: true,
     extensions: [
       // link: the extension below configures it; StarterKit's copy would be a duplicate.
       StarterKit.configure({ text: false, hardBreak: false, link: false }),

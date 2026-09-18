@@ -188,6 +188,9 @@
   "subtasks": {
     "title": "子任务",
     "parent": "父工作项",
+    "setParent": "设置父工作项",
+    "changeParent": "更改父工作项",
+    "parentSearchPrompt": "搜索要设为父工作项的工作项…",
     "newSubtask": "新建子任务",
     "addExisting": "将现有工作项添加为子任务",
     "empty": "暂无子任务。",
