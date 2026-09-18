@@ -51,6 +51,7 @@ export default function Shell({
     views,
     editor,
     customFields,
+    importantDates,
     canCreateIssue,
     errorMsg,
     forbidden,
@@ -137,6 +138,7 @@ export default function Shell({
     views,
     editor,
     customFields,
+    importantDates,
     onOpenIssue: openIssue,
     onAddIssue: addIssue,
     onChatWithAgent: (agentId: number) => {

@@ -142,6 +142,7 @@ export interface ViewSettings {
   // Initial Timeline group state. Individual group toggles are transient and do
   // not update this saved preference.
   timelineCollapseAll: boolean;
+  showImportantDateLines: boolean;
   calendarDateField: DateField;
   weekStart: WeekStart;
   // Group keys collapsed into the "Hidden columns" panel on the flat project (see
@@ -172,6 +173,7 @@ const COMMON: Omit<ViewSettings, 'group' | 'subgroup' | 'properties' | 'sort'> =
   collapseSubtasks: false,
   timelineScale: 'week',
   timelineCollapseAll: false,
+  showImportantDateLines: false,
   calendarDateField: 'dueDate',
   weekStart: 0,
   hiddenGroups: [],
@@ -305,6 +307,10 @@ export function normalizeViewSettings(
       : d.timelineScale,
     timelineCollapseAll:
       typeof s.timelineCollapseAll === 'boolean' ? s.timelineCollapseAll : d.timelineCollapseAll,
+    showImportantDateLines:
+      typeof s.showImportantDateLines === 'boolean'
+        ? s.showImportantDateLines
+        : d.showImportantDateLines,
     calendarDateField:
       s.calendarDateField === 'startDate' ||
       s.calendarDateField === 'dueDate' ||

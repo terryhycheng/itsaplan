@@ -89,7 +89,8 @@
     "startCollapsed": "默认折叠分组",
     "scale": "时间刻度",
     "addCustomField": "添加自定义字段",
-    "viewIcon": "视图图标"
+    "viewIcon": "视图图标",
+    "importantDateLines": "重要日期线"
   },
   "layoutCommand": "{layout}布局"
 }

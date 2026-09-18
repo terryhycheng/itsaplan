@@ -15,6 +15,7 @@ import { SettingsResourceProvider } from './context/settingsPermission';
 import SettingsSubtaskAutomation from './components/configuration/SettingsSubtaskAutomation';
 import SettingsEstimates from './components/configuration/SettingsEstimates';
 import SettingsAutoArchive from './components/configuration/SettingsAutoArchive';
+import SettingsImportantDates from './components/configuration/SettingsImportantDates';
 import { useAutoArchiveForm } from './hooks/useAutoArchiveForm';
 import { useEstimatesForm } from './hooks/useEstimatesForm';
 import { useSubtaskAutomationForm } from './hooks/useSubtaskAutomationForm';
@@ -64,6 +65,7 @@ function ConfigurationPage({ project }: { project: ProjectDetail }) {
       <SettingsResourceProvider resource={section.resource}>
         <RequirePermission resource={section.resource} action="read">
           <div className="space-y-10">
+            <SettingsImportantDates projectKey={project.project.key} />
             {features.subtasks && <SettingsSubtaskAutomation form={subtasks} />}
             <SettingsEstimates form={estimates} />
             <SettingsAutoArchive form={archive} />

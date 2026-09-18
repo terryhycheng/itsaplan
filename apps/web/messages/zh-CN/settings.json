@@ -140,7 +140,19 @@
     "completedIssues": "已完成的工作项",
     "canceledIssues": "已取消的工作项",
     "staleHint": "超过此天数无活动",
-    "days": "天"
+    "days": "天",
+    "importantDates": {
+      "title": "重要日期",
+      "description": "此项目的里程碑和其他日期。",
+      "empty": "尚无重要日期。",
+      "name": "名称",
+      "date": "日期",
+      "showOnTimeline": "在时间线上显示",
+      "shown": "在时间线上显示",
+      "hidden": "不在时间线上显示",
+      "add": "添加日期",
+      "deleteDate": "删除{name}"
+    }
   },
   "states": {
     "addState": "添加{type}状态",

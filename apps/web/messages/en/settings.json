@@ -140,7 +140,19 @@
     "completedIssues": "Completed issues",
     "canceledIssues": "Canceled issues",
     "staleHint": "Archive after this many days without activity.",
-    "days": "days"
+    "days": "days",
+    "importantDates": {
+      "title": "Important dates",
+      "description": "Milestones and other dates for this project.",
+      "empty": "No important dates yet.",
+      "name": "Name",
+      "date": "Date",
+      "showOnTimeline": "Show on timeline",
+      "shown": "Shown on timeline",
+      "hidden": "Hidden from timeline",
+      "add": "Add date",
+      "deleteDate": "Delete {name}"
+    }
   },
   "states": {
     "addState": "Add {type} state",

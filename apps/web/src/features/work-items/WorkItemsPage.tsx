@@ -41,8 +41,16 @@ interface TimelineCollapseState {
 export default function WorkItemsPage() {
   const t = useTranslations('workItems');
   const tCommon = useTranslations('common');
-  const { project, filteredProject, views, editor, customFields, onOpenIssue, onAddIssue } =
-    useShell();
+  const {
+    project,
+    filteredProject,
+    views,
+    editor,
+    customFields,
+    importantDates,
+    onOpenIssue,
+    onAddIssue,
+  } = useShell();
   const { can } = usePermissions();
   const groupLabels = useGroupLabels();
   const features = useProjectFeatures();
@@ -56,7 +64,7 @@ export default function WorkItemsPage() {
   const projectKey = project?.project.key ?? '';
   useLiveRefresh({
     scope: project ? revScope.board(project.project.id) : null,
-    targets: [qk.boardIssues(projectKey)],
+    targets: [qk.boardIssues(projectKey), qk.importantDates(projectKey)],
   });
 
   if (!project || !filteredProject) return null;
@@ -144,6 +152,7 @@ export default function WorkItemsPage() {
             collapsedGroups={collapsedTimelineGroups}
             onToggleGroup={toggleTimelineGroup}
             viewId={editor.activeViewId}
+            importantDates={importantDates.filter((importantDate) => importantDate.showOnTimeline)}
           />
         );
       case 'calendar':

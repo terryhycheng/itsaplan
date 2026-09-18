@@ -89,7 +89,8 @@
     "startCollapsed": "Начинать со свёрнутыми группами",
     "scale": "Масштаб",
     "addCustomField": "Добавить пользовательское поле",
-    "viewIcon": "Иконка представления"
+    "viewIcon": "Иконка представления",
+    "importantDateLines": "Линии важных дат"
   },
   "layoutCommand": "Раскладка «{layout}»"
 }

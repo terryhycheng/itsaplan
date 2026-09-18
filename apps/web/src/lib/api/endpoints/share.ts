@@ -1,4 +1,5 @@
 import type { SavedViewDisplay } from '@/utils/viewSettings';
+import type { ImportantDate } from '@/lib/api/endpoints/important-dates';
 import { request } from '@/lib/api/core/client';
 import type { FeedItem } from '@/lib/api/endpoints/activity';
 import type { BoardIssue, IssueRelations } from '@/lib/api/endpoints/issues';
@@ -31,6 +32,7 @@ export interface SharedViewBundle {
     extended: boolean;
   };
   issues: BoardIssue[];
+  importantDates: ImportantDate[];
 }
 
 // Public read-only sharing. Enabling returns the link token and sets how much it

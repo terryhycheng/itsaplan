@@ -140,7 +140,19 @@
     "completedIssues": "Issue selesai",
     "canceledIssues": "Issue dibatalkan",
     "staleHint": "Arsipkan setelah sekian hari tanpa aktivitas.",
-    "days": "hari"
+    "days": "hari",
+    "importantDates": {
+      "title": "Tanggal penting",
+      "description": "Tonggak dan tanggal lain untuk proyek ini.",
+      "empty": "Belum ada tanggal penting.",
+      "name": "Nama",
+      "date": "Tanggal",
+      "showOnTimeline": "Tampilkan di linimasa",
+      "shown": "Ditampilkan di linimasa",
+      "hidden": "Disembunyikan dari linimasa",
+      "add": "Tambah tanggal",
+      "deleteDate": "Hapus {name}"
+    }
   },
   "states": {
     "addState": "Tambah status {type}",

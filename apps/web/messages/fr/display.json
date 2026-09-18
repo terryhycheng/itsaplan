@@ -89,7 +89,8 @@
     "startCollapsed": "Démarrer avec les groupes réduits",
     "scale": "Échelle",
     "addCustomField": "Ajouter un champ personnalisé",
-    "viewIcon": "Icône de la vue"
+    "viewIcon": "Icône de la vue",
+    "importantDateLines": "Lignes de dates importantes"
   },
   "layoutCommand": "Affichage {layout}"
 }

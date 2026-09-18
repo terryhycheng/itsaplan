@@ -32,6 +32,12 @@ export default function DisplayTimelineRows({
           options={SCALES.map((value) => ({ value, label: scale(value) }))}
         />
       </DisplaySettingsRow>
+      <DisplaySettingsRow label={t('importantDateLines')}>
+        <Checkbox
+          checked={settings.showImportantDateLines}
+          onCheckedChange={(checked) => onChange({ showImportantDateLines: checked === true })}
+        />
+      </DisplaySettingsRow>
     </>
   );
 }

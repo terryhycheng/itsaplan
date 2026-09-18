@@ -140,7 +140,19 @@
     "completedIssues": "Tickets completados",
     "canceledIssues": "Tickets cancelados",
     "staleHint": "Archivar tras estos días sin actividad.",
-    "days": "días"
+    "days": "días",
+    "importantDates": {
+      "title": "Fechas importantes",
+      "description": "Hitos y otras fechas de este proyecto.",
+      "empty": "Aún no hay fechas importantes.",
+      "name": "Nombre",
+      "date": "Fecha",
+      "showOnTimeline": "Mostrar en la cronología",
+      "shown": "Mostrada en la cronología",
+      "hidden": "Oculta de la cronología",
+      "add": "Añadir fecha",
+      "deleteDate": "Eliminar {name}"
+    }
   },
   "states": {
     "addState": "Añadir un estado {type}",

@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { IssueOpenMode } from '@/lib/api/endpoints/userPreferences';
 import type { CustomField } from '@/lib/api/endpoints/customFields';
+import type { ImportantDate } from '@/lib/api/endpoints/important-dates';
 import type { ProjectDetail } from '@/lib/api/endpoints/projects';
 import type { View } from '@/lib/api/endpoints/views';
 import type { NewIssueDefaults } from '@/utils/project';
@@ -16,6 +17,7 @@ export type ShellContext = {
   views: View[];
   editor: ReturnType<typeof useViewEditor>;
   customFields: CustomField[];
+  importantDates: ImportantDate[];
   // Opens an issue. Without `mode` the account's issueOpenMode preference decides
   // between the side panel and the issue page; pass it to force one of them.
   onOpenIssue: (id: number, mode?: IssueOpenMode) => void;

@@ -89,7 +89,8 @@
     "startCollapsed": "Start with groups collapsed",
     "scale": "Scale",
     "addCustomField": "Add custom field",
-    "viewIcon": "View icon"
+    "viewIcon": "View icon",
+    "importantDateLines": "Important date lines"
   },
   "layoutCommand": "{layout} layout"
 }

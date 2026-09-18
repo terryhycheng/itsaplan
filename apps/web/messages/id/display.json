@@ -89,7 +89,8 @@
     "startCollapsed": "Mulai dengan grup diciutkan",
     "scale": "Skala",
     "addCustomField": "Tambah bidang kustom",
-    "viewIcon": "Ikon tampilan"
+    "viewIcon": "Ikon tampilan",
+    "importantDateLines": "Garis tanggal penting"
   },
   "layoutCommand": "Tata letak {layout}"
 }

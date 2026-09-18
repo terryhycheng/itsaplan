@@ -89,7 +89,8 @@
     "startCollapsed": "Починати зі згорнутими групами",
     "scale": "Масштаб",
     "addCustomField": "Додати власне поле",
-    "viewIcon": "Іконка подання"
+    "viewIcon": "Іконка подання",
+    "importantDateLines": "Лінії важливих дат"
   },
   "layoutCommand": "Розкладка «{layout}»"
 }

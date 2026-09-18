@@ -1,4 +1,5 @@
 import type { BoardIssue } from '@/lib/api/endpoints/issues';
+import type { ImportantDate } from '@/lib/api/endpoints/important-dates';
 import type { WorkItemsViewProps } from '@/utils/project';
 import type { WorkItemsView } from '@/utils/viewTypes';
 import { withoutShownSubtasks } from '@/utils/subtasks';
@@ -16,6 +17,7 @@ interface BoardLayoutProps extends WorkItemsViewProps {
   // `project`: the link and subtask rows read it so a card shows every link and
   // subtask it has, wherever the other end sits.
   allIssues: BoardIssue[];
+  importantDates?: ImportantDate[];
 }
 
 // The board in its selected layout, with the relations and subtasks its cards and
@@ -26,6 +28,7 @@ export default function BoardLayout({
   view,
   widthScope,
   allIssues,
+  importantDates = [],
   ...viewProps
 }: BoardLayoutProps) {
   const { project, settings } = viewProps;
@@ -44,7 +47,7 @@ export default function BoardLayout({
       case 'table':
         return <TableView {...layoutProps} widthScope={widthScope} />;
       case 'timeline':
-        return <TimelineView {...layoutProps} />;
+        return <TimelineView {...layoutProps} importantDates={importantDates} />;
       case 'calendar':
         return <CalendarView {...layoutProps} />;
       default:

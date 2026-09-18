@@ -89,7 +89,8 @@
     "startCollapsed": "Empezar con los grupos contraídos",
     "scale": "Escala",
     "addCustomField": "Añadir campo personalizado",
-    "viewIcon": "Icono de la vista"
+    "viewIcon": "Icono de la vista",
+    "importantDateLines": "Líneas de fechas importantes"
   },
   "layoutCommand": "Disposición {layout}"
 }

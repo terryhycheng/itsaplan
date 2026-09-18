@@ -7,6 +7,7 @@ import {
 } from '@/services/projects.service';
 import { useViewsQuery } from '@/services/views.service';
 import { useCycleOptionsQuery } from '@/services/cycles.service';
+import { useImportantDatesQuery } from '@/services/importantDates.service';
 import { ApiError } from '@/lib/api/core/client';
 import { applyFilters } from '@/utils/filters';
 import { withoutShownSubtasks } from '@/utils/subtasks';
@@ -32,6 +33,7 @@ export function useShellProject(projectKey: string | null, activeViewId: number 
   // child reads project.issues as before.
   const projectQuery = useProjectQuery(projectKey);
   const boardIssuesQuery = useBoardIssuesQuery(projectKey);
+  const importantDatesQuery = useImportantDatesQuery(projectKey);
   const scaffold = projectQuery.data ?? null;
   // The cycle options join the composite so grouping by cycle can lay out a lane
   // per cycle a board plans into, not only per cycle an issue is already in. The
@@ -95,6 +97,7 @@ export function useShellProject(projectKey: string | null, activeViewId: number 
     projectsQuery.error ??
     projectQuery.error ??
     roleDenied(boardIssuesQuery.error) ??
+    roleDenied(importantDatesQuery.error) ??
     roleDenied(viewsQuery.error);
 
   return {
@@ -105,6 +108,7 @@ export function useShellProject(projectKey: string | null, activeViewId: number 
     views,
     editor,
     customFields,
+    importantDates: importantDatesQuery.data ?? [],
     canCreateIssue,
     errorMsg: errorMessage(error),
     // A 403 on the scaffold means the session is valid but the user is not a member

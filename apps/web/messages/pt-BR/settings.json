@@ -140,7 +140,19 @@
     "completedIssues": "Issues concluídas",
     "canceledIssues": "Issues canceladas",
     "staleHint": "Arquivar após este número de dias sem atividade.",
-    "days": "dias"
+    "days": "dias",
+    "importantDates": {
+      "title": "Datas importantes",
+      "description": "Marcos e outras datas deste projeto.",
+      "empty": "Ainda não há datas importantes.",
+      "name": "Nome",
+      "date": "Data",
+      "showOnTimeline": "Mostrar na linha do tempo",
+      "shown": "Exibida na linha do tempo",
+      "hidden": "Oculta da linha do tempo",
+      "add": "Adicionar data",
+      "deleteDate": "Excluir {name}"
+    }
   },
   "states": {
     "addState": "Adicionar estado {type}",

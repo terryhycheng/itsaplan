@@ -1,5 +1,6 @@
 import { startOfDay } from 'date-fns';
 import type { ProjectDetail } from '@/lib/api/endpoints/projects';
+import type { ImportantDate } from '@/lib/api/endpoints/important-dates';
 import type { BoardIssue, Issue } from '@/lib/api/endpoints/issues';
 import { parseDate } from '@/utils/dates';
 import type { FilterSet } from '@/utils/filters';
@@ -17,6 +18,7 @@ import {
 } from '@/utils/project';
 import type { Sort } from '@/utils/viewTypes';
 import type { GroupField, TimelineScale } from '@/utils/viewSettings';
+import { expandTimelineRange, groupTimelineMarkers, type TimelineMarker } from './timelineMarkers';
 
 // px per day at each zoom level. Wider days keep the per-day numbers legible;
 // narrower days fit longer ranges and fall back to weekly gridlines.
@@ -103,6 +105,7 @@ function sectionSpan(issueRows: { span: Span }[]): Span | null {
 // the flattened rows plus the day track they are placed on.
 export interface TimelineModel extends DayTrack {
   rows: TimelineRow[];
+  markers: TimelineMarker[];
 }
 
 export function buildTimeline({
@@ -117,6 +120,7 @@ export function buildTimeline({
   viewportW,
   labelW,
   dayW,
+  importantDates,
 }: {
   project: ProjectDetail;
   filters: FilterSet;
@@ -129,6 +133,7 @@ export function buildTimeline({
   viewportW: number;
   labelW: number;
   dayW: number;
+  importantDates: ImportantDate[];
 }): TimelineModel {
   const sorted = sortIssues(project.issues, sort, project);
   const groups = buildGroups(project, group, groupLabels, filters);
@@ -217,5 +222,8 @@ export function buildTimeline({
     if (!max || row.aggregateSpan.end > max) max = row.aggregateSpan.end;
   }
 
-  return { rows, ...buildDayTrack({ min, max, viewportW, labelW, dayW }) };
+  const markers = groupTimelineMarkers(importantDates);
+  ({ min, max } = expandTimelineRange(min, max, markers));
+
+  return { rows, markers, ...buildDayTrack({ min, max, viewportW, labelW, dayW }) };
 }

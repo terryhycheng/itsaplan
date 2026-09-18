@@ -89,7 +89,8 @@
     "startCollapsed": "البدء بمجموعات مطوية",
     "scale": "المقياس",
     "addCustomField": "إضافة حقل مخصّص",
-    "viewIcon": "أيقونة العرض"
+    "viewIcon": "أيقونة العرض",
+    "importantDateLines": "خطوط التواريخ المهمة"
   },
   "layoutCommand": "تخطيط {layout}"
 }
