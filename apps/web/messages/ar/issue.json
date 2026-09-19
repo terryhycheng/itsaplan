@@ -26,6 +26,7 @@
     "timeOverBy": "{time} زيادة",
     "startDate": "تاريخ البدء",
     "dueDate": "تاريخ الاستحقاق",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "الخصائص",
     "groupState": "الحالة",
     "groupPeople": "الأشخاص",

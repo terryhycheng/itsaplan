@@ -85,6 +85,10 @@
       "label": "配置",
       "description": "设置子任务与父工作项的联动方式，以及何时归档长期无活动的工作项。"
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "操作",
       "description": "设置工作项上的快捷操作，一次点击即可更改字段。"

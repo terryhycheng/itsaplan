@@ -22,6 +22,7 @@ export const PERMISSION_RESOURCES = [
   'agent_tools',
   'custom_fields',
   'issue_templates',
+  'recurring_issues',
   'workflow_config',
   'actions',
   'webhooks',
@@ -89,6 +90,7 @@ export function defaultMemberPermissions(): Permissions {
   p.ai_agents.read = true;
   p.custom_fields.read = true;
   p.issue_templates.read = true;
+  p.recurring_issues.read = true;
   p.members_manage.read = true;
   p.members_invite.read = true;
   return p;

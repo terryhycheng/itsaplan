@@ -85,6 +85,10 @@
       "label": "Configuration",
       "description": "How subtasks close with their parent, and when stale issues are archived."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "Actions",
       "description": "Buttons on an issue that set fields in one click."

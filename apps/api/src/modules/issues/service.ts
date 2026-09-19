@@ -14,6 +14,7 @@ import {
   customFieldOption,
   initiative,
   cycle,
+  recurringIssue,
 } from '@repo/db';
 import {
   and,
@@ -145,6 +146,12 @@ export interface IssueRow {
   // UI can filter by custom fields without a per-issue fetch. Only listIssues
   // populates this; mapIssue alone leaves it empty.
   fieldValues: IssueFieldValueEntry[];
+  recurrenceOrigin: {
+    recurringIssueId: number;
+    name: string;
+    status: string;
+    scheduledFor: string;
+  } | null;
 }
 
 function mapIssue(row: typeof issue.$inferSelect, projectKey: string): IssueRow {
@@ -177,7 +184,33 @@ function mapIssue(row: typeof issue.$inferSelect, projectKey: string): IssueRow 
     shareExtended: row.shareExtended,
     labelIds: [],
     fieldValues: [],
+    recurrenceOrigin:
+      row.recurringIssueId != null && row.recurrenceScheduledFor != null
+        ? {
+            recurringIssueId: row.recurringIssueId,
+            name: '',
+            status: '',
+            scheduledFor: iso(row.recurrenceScheduledFor),
+          }
+        : null,
   };
+}
+
+async function attachRecurrenceOrigins(issues: IssueRow[]): Promise<void> {
+  const ids = [...new Set(issues.flatMap((row) => row.recurrenceOrigin?.recurringIssueId ?? []))];
+  if (ids.length === 0) return;
+  const rows = await db
+    .select({ id: recurringIssue.id, name: recurringIssue.name, status: recurringIssue.status })
+    .from(recurringIssue)
+    .where(inArray(recurringIssue.id, ids));
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  for (const issueRow of issues) {
+    if (!issueRow.recurrenceOrigin) continue;
+    const origin = byId.get(issueRow.recurrenceOrigin.recurringIssueId);
+    issueRow.recurrenceOrigin = origin
+      ? { ...issueRow.recurrenceOrigin, name: origin.name, status: origin.status }
+      : null;
+  }
 }
 
 // Sets each issue's statusSince to when it entered the column it is in now, leaving
@@ -649,9 +682,11 @@ export async function getIssues(ids: number[]): Promise<IssueRow[]> {
     .where(inArray(issue.id, ids));
   const issues = rows.map((row) => mapIssue(row.issue, row.projectKey));
   await attachLabels(issues);
+  await attachFieldValues(issues);
   await attachStatusSince(issues);
   await attachGroupings(issues);
   await attachLoggedMinutes(issues);
+  await attachRecurrenceOrigins(issues);
   return issues;
 }
 
@@ -670,9 +705,11 @@ export async function getIssueBySequence(
   if (!rows[0]) return null;
   const mapped = mapIssue(rows[0].issue, rows[0].projectKey);
   await attachLabels([mapped]);
+  await attachFieldValues([mapped]);
   await attachStatusSince([mapped]);
   await attachGroupings([mapped]);
   await attachLoggedMinutes([mapped]);
+  await attachRecurrenceOrigins([mapped]);
   return mapped;
 }
 
@@ -699,6 +736,13 @@ export interface NewIssueInput {
   startDate?: string | null;
   dueDate?: string | null;
   labelIds?: number[];
+  fieldValues?: {
+    fieldId: number;
+    value?: string | number | boolean | null;
+    valueEnd?: string | null;
+    optionIds?: number[];
+  }[];
+  recurringOrigin?: { recurringIssueId: number; scheduledFor: Date };
 }
 
 // Enforces that assignee holds a project member and delegate holds an agent of the
@@ -837,8 +881,9 @@ function assertDateOrder(startDate?: string | null, dueDate?: string | null) {
 export async function createIssue(
   project: ProjectRow,
   input: NewIssueInput,
-  actorUserId?: string | null,
+  actor?: ActivityActor,
 ): Promise<IssueRow> {
+  const actorUserId = actorId(actor);
   await assertAssignments(project.id, input);
   await assertInitiative(project.id, input.initiativeId);
   const cycleDates = await assertCycle(project.id, input.cycleId);
@@ -882,52 +927,62 @@ export async function createIssue(
         estimateMinutes: input.estimateMinutes ?? null,
         startDate: cycleDates?.startDate ?? input.startDate ?? null,
         dueDate: cycleDates?.dueDate ?? input.dueDate ?? null,
+        recurringIssueId: input.recurringOrigin?.recurringIssueId ?? null,
+        recurrenceScheduledFor: input.recurringOrigin?.scheduledFor ?? null,
         position: Number(posRow.pos),
       })
       .returning({ id: issue.id, createdAt: issue.createdAt });
     return row;
   });
 
-  // The first stretch of the status history starts when the issue does, so the
-  // entries of its creation fall inside it.
-  await recordStatusChange([issueId], input.columnId, createdAt);
-  await recordActivity(issueId, [{ action: 'created' }], actorUserId);
-  if (input.cycleId != null) await recordCycleChange(issueId, null, input.cycleId);
-  if (input.parentId != null) await recordParentChange(issueId, null, input.parentId, actorUserId);
-  if (input.parentId != null) await syncParentDates(input.parentId);
-  // Suppress the label_changed event on creation — the initial labels are part of
-  // the issue.created payload, so a separate change event would be redundant.
-  if (input.labelIds?.length)
-    await setIssueLabels(project.id, issueId, input.labelIds, actorUserId, false);
-  const created = (await getIssue(issueId))!;
-  // The author follows what they filed; the assignee is subscribed by the
-  // assignment notification below, the same as a later assignment does.
-  await autoWatchIssue(project.id, issueId, [actorUserId]);
-  await emitWebhookEvent(project.id, 'issue.created', created);
-  // An issue created already delegated to an agent enqueues a run, the same as
-  // delegating one later does.
-  await enqueueDelegateRun(created, actorUserId);
-  // An issue created already assigned to a member notifies them, the same as
-  // assigning one later does.
-  if (created.assigneeUserId) {
-    await notifyIssueChange({
+  try {
+    // The first stretch of the status history starts when the issue does, so the
+    // entries of its creation fall inside it.
+    await recordStatusChange([issueId], input.columnId, createdAt);
+    await recordActivity(issueId, [{ action: 'created' }], actor);
+    if (input.cycleId != null) await recordCycleChange(issueId, null, input.cycleId);
+    if (input.parentId != null) await recordParentChange(issueId, null, input.parentId, actor);
+    if (input.parentId != null) await syncParentDates(input.parentId);
+    // Suppress the label_changed event on creation — the initial labels are part of
+    // the issue.created payload, so a separate change event would be redundant.
+    if (input.labelIds?.length)
+      await setIssueLabels(project.id, issueId, input.labelIds, actor, false);
+    for (const fieldValue of input.fieldValues ?? []) {
+      await setIssueFieldValue(project.id, issueId, fieldValue.fieldId, fieldValue, actor);
+    }
+    const created = (await getIssue(issueId))!;
+    // The author follows what they filed; the assignee is subscribed by the
+    // assignment notification below, the same as a later assignment does.
+    await autoWatchIssue(project.id, issueId, [actorUserId]);
+    await emitWebhookEvent(project.id, 'issue.created', created);
+    // An issue created already delegated to an agent enqueues a run, the same as
+    // delegating one later does.
+    await enqueueDelegateRun(created, actorUserId);
+    // An issue created already assigned to a member notifies them, the same as
+    // assigning one later does.
+    if (created.assigneeUserId) {
+      await notifyIssueChange({
+        projectId: project.id,
+        issueId,
+        actorUserId: actorUserId ?? null,
+        assignedUserId: created.assigneeUserId,
+      });
+    }
+    // A description written on creation reaches the people it mentions, the same as
+    // one written into an existing issue does.
+    await notifyTextMentions({
       projectId: project.id,
       issueId,
       actorUserId: actorUserId ?? null,
-      assignedUserId: created.assigneeUserId,
+      sourceActivityId: null,
+      before: '',
+      after: created.description,
     });
+    return created;
+  } catch (error) {
+    if (input.recurringOrigin) await db.delete(issue).where(eq(issue.id, issueId));
+    throw error;
   }
-  // A description written on creation reaches the people it mentions, the same as
-  // one written into an existing issue does.
-  await notifyTextMentions({
-    projectId: project.id,
-    issueId,
-    actorUserId: actorUserId ?? null,
-    sourceActivityId: null,
-    before: '',
-    after: created.description,
-  });
-  return created;
 }
 
 // The identifiers ("MKT-42") of the given issues, for the activity entries a parent
@@ -1170,7 +1225,7 @@ export async function setIssueLabels(
   projectId: number,
   issueId: number,
   labelIds: number[],
-  actorUserId?: string | null,
+  actor?: ActivityActor,
   emitEvent = true,
 ): Promise<void> {
   await assertIssueLabels(projectId, labelIds);
@@ -1207,7 +1262,7 @@ export async function setIssueLabels(
     events.push({ action: 'label_add', to: rowSide(names.get(labelId), labelId) });
   for (const labelId of removed)
     events.push({ action: 'label_remove', from: rowSide(names.get(labelId), labelId) });
-  await recordActivity(issueId, events, actorUserId);
+  await recordActivity(issueId, events, actor);
 
   if (emitEvent && (added.length > 0 || removed.length > 0)) {
     const issueRow = await getIssue(issueId);
@@ -1570,8 +1625,9 @@ export async function setIssueFieldValue(
     valueEnd?: string | null;
     optionIds?: number[];
   },
-  actorUserId?: string | null,
+  actor?: ActivityActor,
 ): Promise<void> {
+  const actorUserId = actorId(actor);
   const field = await getCustomFieldById(projectId, fieldId);
   if (!field) throw new HttpError(404, 'Custom field not found');
 
@@ -1691,7 +1747,7 @@ export async function setIssueFieldValue(
         to: rowSide(loggedValue, loggedId),
       },
     ],
-    actorUserId,
+    actor,
   );
 
   if (memberUserId && memberUserId !== previousMemberUserId) {

@@ -1,4 +1,68 @@
 {
+  "recurringIssues": {
+    "newTitle": "New recurring issue",
+    "editTitle": "Edit recurring issue",
+    "issueTitle": "Issue title",
+    "issueDescription": "Issue description",
+    "schedule": "Schedule",
+    "properties": "Issue properties",
+    "frequency": "Frequency",
+    "interval": "Repeat every",
+    "weekdays": "Weekdays",
+    "month": "Month",
+    "dayOfMonth": "Day of month",
+    "startDate": "Start date",
+    "time": "Local time",
+    "timezone": "Time zone",
+    "endDate": "End date (optional)",
+    "maxOccurrences": "Maximum issues (optional)",
+    "dstHint": "Times use the selected time zone. During daylight-saving changes, nonexistent times move forward and repeated times use the earlier occurrence.",
+    "scheduleDescriptions": {
+      "daily": "Every {interval, plural, one {day} other {# days}}",
+      "weekly": "Every {interval, plural, one {week} other {# weeks}} on {days}",
+      "monthly": "Every {interval, plural, one {month} other {# months}} on day {day}",
+      "yearly": "Every {interval, plural, one {year} other {# years}} on {month}/{day}"
+    },
+    "frequencies": {
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "days": { "1": "M", "2": "T", "3": "W", "4": "T", "5": "F", "6": "S", "7": "S" },
+    "points": "Story points",
+    "minutes": "Estimate minutes",
+    "startOffset": "Start offset (days)",
+    "dueOffset": "Due offset (days)",
+    "offsetError": "The due offset must not be before the start offset.",
+    "statuses": {
+      "active": "Active",
+      "paused": "Paused",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
+    "occurrenceStatuses": {
+      "pending": "Pending",
+      "created": "Created",
+      "skipped": "Skipped",
+      "failed": "Failed"
+    },
+    "nextRun": "Next run",
+    "history": "Occurrence history",
+    "historyTitle": "Occurrence history",
+    "noOccurrences": "No occurrences yet.",
+    "pause": "Pause",
+    "resume": "Resume",
+    "edit": "Edit",
+    "cancel": "Cancel recurrence",
+    "cancelTitle": "Cancel recurring issue",
+    "cancelMessage": "Cancel {name}? Existing generated issues remain unchanged.",
+    "empty": "No recurring issues yet",
+    "emptyHint": "Create a schedule that adds an independent issue when it is due.",
+    "loadFailed": "Couldn't load recurring issues",
+    "loadFailedHint": "Check your connection and try again.",
+    "tryAgain": "Try again"
+  },
   "schedules": {
     "newTitle": "New schedule",
     "editTitle": "Edit schedule",

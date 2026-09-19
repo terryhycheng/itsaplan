@@ -23,7 +23,7 @@ import {
 import { DESCRIPTION_SECTION, OTHER_SECTION, fieldSectionId } from '../../utils/bodySections';
 import { hasFieldValue } from '../../utils/fieldValues';
 import EstimatePill from '../fields/EstimatePill';
-import IssueCustomFieldPill from '../fields/IssueCustomFieldPill';
+import CustomFieldPill from '@/components/common/fields/CustomFieldPill';
 import NewIssueAttachButton from './NewIssueAttachButton';
 import NewIssueAttachmentStrip from './NewIssueAttachmentStrip';
 import NewIssueDropOverlay from './NewIssueDropOverlay';
@@ -48,7 +48,7 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Pill } from '@/components/common/fields/Pill';
-import InitiativeSelect from '../fields/InitiativeSelect';
+import InitiativeSelect from '@/components/common/fields/InitiativeSelect';
 import CycleSelect from '../fields/CycleSelect';
 import { useTranslations } from 'next-intl';
 
@@ -457,7 +457,7 @@ export default function NewIssueModal({
           />
 
           {activeDefs.map((def) => (
-            <IssueCustomFieldPill
+            <CustomFieldPill
               key={def.id}
               def={def}
               value={fieldValues[def.id]}

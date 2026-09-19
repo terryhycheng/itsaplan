@@ -85,6 +85,10 @@
       "label": "Configuración",
       "description": "Cómo se cierran las subtareas con su padre, y cuándo se archivan los tickets obsoletos."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "Acciones",
       "description": "Botones en un ticket que definen campos con un clic."

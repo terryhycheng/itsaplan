@@ -19,6 +19,7 @@
     "agent_tools": "Agent tools",
     "custom_fields": "Custom fields",
     "issue_templates": "Issue templates",
+    "recurring_issues": "Recurring issues",
     "workflow_config": "Workflow configuration",
     "actions": "Actions",
     "webhooks": "Webhooks",

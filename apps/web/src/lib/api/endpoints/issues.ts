@@ -158,6 +158,12 @@ export interface BoardIssues {
 
 export interface IssueDetail extends Issue {
   fields: IssueFieldValue[];
+  recurrenceOrigin?: {
+    recurringIssueId: number;
+    name: string;
+    status: string;
+    scheduledFor: string;
+  } | null;
 }
 
 // A relation between two issues (mirrors apps/api modules/issues/links.ts). 'blocks' and

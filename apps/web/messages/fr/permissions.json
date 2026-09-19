@@ -19,6 +19,7 @@
     "agent_tools": "Outils des agents",
     "custom_fields": "Champs personnalisés",
     "issue_templates": "Modèles de tickets",
+    "recurring_issues": "Recurring issues",
     "workflow_config": "Configuration du flux de travail",
     "actions": "Actions",
     "webhooks": "Webhooks",

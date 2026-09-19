@@ -1274,6 +1274,143 @@ export const cycle = pgTable(
   ],
 );
 
+export const recurringIssue = pgTable(
+  'recurring_issue',
+  {
+    id: serial('id').primaryKey(),
+    projectId: integer('project_id')
+      .notNull()
+      .references(() => project.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    status: text('status').notNull().default('active'),
+    frequency: text('frequency').notNull(),
+    interval: integer('interval').notNull().default(1),
+    weekdays: integer('weekdays').array(),
+    dayOfMonth: integer('day_of_month'),
+    month: integer('month'),
+    startDate: date('start_date').notNull(),
+    localTime: text('local_time').notNull(),
+    timezone: text('timezone').notNull(),
+    endDate: date('end_date'),
+    maxOccurrences: integer('max_occurrences'),
+    occurrenceCount: integer('occurrence_count').notNull().default(0),
+    nextRunAt: timestamp('next_run_at', { withTimezone: true }),
+    lastRunAt: timestamp('last_run_at', { withTimezone: true }),
+    createdByUserId: text('created_by_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    title: text('title').notNull(),
+    description: text('description').notNull().default(''),
+    columnId: integer('column_id').references(() => projectColumn.id, { onDelete: 'set null' }),
+    typeId: integer('type_id').references(() => issueType.id, { onDelete: 'set null' }),
+    initiativeId: integer('initiative_id').references(() => initiative.id, {
+      onDelete: 'set null',
+    }),
+    assigneeUserId: text('assignee_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    delegateUserId: text('delegate_user_id').references(() => user.id, {
+      onDelete: 'set null',
+    }),
+    priority: text('priority'),
+    estimatePoints: numeric('estimate_points'),
+    estimateMinutes: integer('estimate_minutes'),
+    startOffsetDays: integer('start_offset_days'),
+    dueOffsetDays: integer('due_offset_days'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('recurring_issue_project_name_uq').on(t.projectId, t.name),
+    index('recurring_issue_due_idx').on(t.status, t.nextRunAt, t.id),
+    check(
+      'recurring_issue_status_check',
+      sql`${t.status} IN ('active', 'paused', 'cancelled', 'completed')`,
+    ),
+    check(
+      'recurring_issue_frequency_check',
+      sql`${t.frequency} IN ('daily', 'weekly', 'monthly', 'yearly')`,
+    ),
+    check('recurring_issue_interval_check', sql`${t.interval} BETWEEN 1 AND 100`),
+    check(
+      'recurring_issue_schedule_fields_check',
+      sql`(${t.frequency} = 'weekly' AND cardinality(${t.weekdays}) > 0 AND ${t.dayOfMonth} IS NULL AND ${t.month} IS NULL)
+        OR (${t.frequency} = 'monthly' AND ${t.weekdays} IS NULL AND ${t.dayOfMonth} BETWEEN 1 AND 31 AND ${t.month} IS NULL)
+        OR (${t.frequency} = 'yearly' AND ${t.weekdays} IS NULL AND ${t.dayOfMonth} BETWEEN 1 AND 31 AND ${t.month} BETWEEN 1 AND 12)
+        OR (${t.frequency} = 'daily' AND ${t.weekdays} IS NULL AND ${t.dayOfMonth} IS NULL AND ${t.month} IS NULL)`,
+    ),
+    check(
+      'recurring_issue_weekdays_check',
+      sql`${t.weekdays} IS NULL OR ${t.weekdays} <@ ARRAY[1,2,3,4,5,6,7]::integer[]`,
+    ),
+    check(
+      'recurring_issue_dates_check',
+      sql`${t.endDate} IS NULL OR ${t.endDate} >= ${t.startDate}`,
+    ),
+    check(
+      'recurring_issue_max_occurrences_check',
+      sql`${t.maxOccurrences} IS NULL OR ${t.maxOccurrences} > 0`,
+    ),
+    check('recurring_issue_occurrence_count_check', sql`${t.occurrenceCount} >= 0`),
+    check('recurring_issue_estimate_points_check', sql`${t.estimatePoints} >= 0`),
+    check('recurring_issue_estimate_minutes_check', sql`${t.estimateMinutes} >= 0`),
+    check(
+      'recurring_issue_date_offsets_check',
+      sql`${t.startOffsetDays} IS NULL OR ${t.dueOffsetDays} IS NULL OR ${t.dueOffsetDays} >= ${t.startOffsetDays}`,
+    ),
+  ],
+);
+
+export const recurringIssueLabel = pgTable(
+  'recurring_issue_label',
+  {
+    recurringIssueId: integer('recurring_issue_id')
+      .notNull()
+      .references(() => recurringIssue.id, { onDelete: 'cascade' }),
+    labelId: integer('label_id')
+      .notNull()
+      .references(() => label.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.recurringIssueId, t.labelId] })],
+);
+
+export const recurringIssueFieldValue = pgTable(
+  'recurring_issue_field_value',
+  {
+    id: serial('id').primaryKey(),
+    recurringIssueId: integer('recurring_issue_id')
+      .notNull()
+      .references(() => recurringIssue.id, { onDelete: 'cascade' }),
+    fieldId: integer('field_id')
+      .notNull()
+      .references(() => customField.id, { onDelete: 'cascade' }),
+    valueText: text('value_text'),
+    valueNumber: numeric('value_number'),
+    valueBool: boolean('value_bool'),
+    valueDate: date('value_date'),
+    valueDatetime: timestamp('value_datetime', { withTimezone: true }),
+    valueDatetimeEnd: timestamp('value_datetime_end', { withTimezone: true }),
+    valueUserId: text('value_user_id').references(() => user.id, { onDelete: 'set null' }),
+  },
+  (t) => [unique().on(t.recurringIssueId, t.fieldId)],
+);
+
+export const recurringIssueFieldOption = pgTable(
+  'recurring_issue_field_option',
+  {
+    recurringIssueId: integer('recurring_issue_id')
+      .notNull()
+      .references(() => recurringIssue.id, { onDelete: 'cascade' }),
+    fieldId: integer('field_id')
+      .notNull()
+      .references(() => customField.id, { onDelete: 'cascade' }),
+    optionId: integer('option_id')
+      .notNull()
+      .references(() => customFieldOption.id, { onDelete: 'cascade' }),
+  },
+  (t) => [primaryKey({ columns: [t.recurringIssueId, t.fieldId, t.optionId] })],
+);
+
 export const issue = pgTable(
   'issue',
   {
@@ -1324,6 +1461,10 @@ export const issue = pgTable(
     estimateMinutes: integer('estimate_minutes'),
     startDate: date('start_date'),
     dueDate: date('due_date'),
+    recurringIssueId: integer('recurring_issue_id').references(() => recurringIssue.id, {
+      onDelete: 'set null',
+    }),
+    recurrenceScheduledFor: timestamp('recurrence_scheduled_for', { withTimezone: true }),
     position: doublePrecision('position').notNull().default(0),
     // When set, the issue is archived: hidden from the board and lists but kept and
     // restorable. Set manually (archive action) or by the worker's auto-archive
@@ -1360,6 +1501,39 @@ export const issue = pgTable(
     index('issue_cycle_idx')
       .on(t.cycleId)
       .where(sql`${t.cycleId} IS NOT NULL`),
+    uniqueIndex('issue_recurring_occurrence_uq')
+      .on(t.recurringIssueId, t.recurrenceScheduledFor)
+      .where(sql`${t.recurringIssueId} IS NOT NULL AND ${t.recurrenceScheduledFor} IS NOT NULL`),
+  ],
+);
+
+export const recurringIssueOccurrence = pgTable(
+  'recurring_issue_occurrence',
+  {
+    id: serial('id').primaryKey(),
+    recurringIssueId: integer('recurring_issue_id')
+      .notNull()
+      .references(() => recurringIssue.id, { onDelete: 'cascade' }),
+    scheduledFor: timestamp('scheduled_for', { withTimezone: true }).notNull(),
+    status: text('status').notNull().default('pending'),
+    issueId: integer('issue_id').references(() => issue.id, { onDelete: 'set null' }),
+    attempts: integer('attempts').notNull().default(0),
+    nextAttemptAt: timestamp('next_attempt_at', { withTimezone: true }).notNull().defaultNow(),
+    lastError: text('last_error'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    finishedAt: timestamp('finished_at', { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex('recurring_issue_occurrence_fire_uq').on(t.recurringIssueId, t.scheduledFor),
+    uniqueIndex('recurring_issue_occurrence_issue_uq')
+      .on(t.issueId)
+      .where(sql`${t.issueId} IS NOT NULL`),
+    index('recurring_issue_occurrence_due_idx').on(t.status, t.nextAttemptAt, t.id),
+    check(
+      'recurring_issue_occurrence_status_check',
+      sql`${t.status} IN ('pending', 'created', 'skipped', 'failed')`,
+    ),
+    check('recurring_issue_occurrence_attempts_check', sql`${t.attempts} >= 0`),
   ],
 );
 

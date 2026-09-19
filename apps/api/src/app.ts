@@ -109,6 +109,7 @@ export const app = new Elysia()
           },
           { name: 'Custom Fields', description: 'Global and type-scoped custom fields' },
           { name: 'Issue Templates', description: 'Presets a new issue can be created from' },
+          { name: 'Recurring Issues', description: 'Scheduled project issue creation' },
           { name: 'Issues', description: 'Issues, their fields, feed, and comments' },
           {
             name: 'Initiatives',

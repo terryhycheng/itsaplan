@@ -26,6 +26,7 @@
     "timeOverBy": "{time} a mais",
     "startDate": "Data de início",
     "dueDate": "Data de vencimento",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "Propriedades",
     "groupState": "Estado",
     "groupPeople": "Pessoas",

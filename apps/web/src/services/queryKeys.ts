@@ -133,6 +133,11 @@ export const qk = {
     ['agentSchedules', projectKey, 'page', params] as const,
   agentScheduleRuns: (projectKey: string, scheduleId: number) =>
     ['agentSchedules', projectKey, scheduleId, 'runs'] as const,
+  recurringIssues: (projectKey: string) => ['recurringIssues', projectKey] as const,
+  recurringIssuePage: (projectKey: string, params: unknown) =>
+    ['recurringIssues', projectKey, 'page', params] as const,
+  recurringIssueOccurrences: (projectKey: string, id: number, params: unknown) =>
+    ['recurringIssues', projectKey, id, 'occurrences', params] as const,
   // The caller's chat threads with one agent (the AI Chat history rail) and the
   // transcript of one thread (restored when a thread is opened). A search is a list of
   // its own, so the unsearched list stays cached while one is typed.

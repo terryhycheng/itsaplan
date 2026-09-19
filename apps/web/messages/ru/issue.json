@@ -26,6 +26,7 @@
     "timeOverBy": "{time} сверх",
     "startDate": "Дата начала",
     "dueDate": "Дедлайн",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "Свойства",
     "groupState": "Статус",
     "groupPeople": "Люди",

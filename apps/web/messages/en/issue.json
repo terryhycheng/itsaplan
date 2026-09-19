@@ -26,6 +26,7 @@
     "timeOverBy": "{time} over",
     "startDate": "Start date",
     "dueDate": "Due date",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "Properties",
     "groupState": "State",
     "groupPeople": "People",

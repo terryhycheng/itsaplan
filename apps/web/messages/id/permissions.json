@@ -19,6 +19,7 @@
     "agent_tools": "Alat agen",
     "custom_fields": "Bidang kustom",
     "issue_templates": "Templat issue",
+    "recurring_issues": "Recurring issues",
     "workflow_config": "Konfigurasi alur kerja",
     "actions": "Tindakan",
     "webhooks": "Webhook",

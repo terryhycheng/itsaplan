@@ -26,6 +26,7 @@
     "timeOverBy": "超出 {time}",
     "startDate": "开始日期",
     "dueDate": "截止日期",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "属性",
     "groupState": "状态",
     "groupPeople": "人员",

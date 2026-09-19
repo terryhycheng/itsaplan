@@ -85,6 +85,10 @@
       "label": "Configuration",
       "description": "Comment les sous-tâches se ferment avec leur parent, et à quel moment les tickets inactifs sont archivés."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "Actions",
       "description": "Des boutons sur un ticket qui renseignent des champs en un clic."

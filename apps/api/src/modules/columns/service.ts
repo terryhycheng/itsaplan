@@ -1,4 +1,12 @@
-import { db, projectColumn, issue, issueLabel, issueFieldValue, issueFieldOption } from '@repo/db';
+import {
+  db,
+  projectColumn,
+  issue,
+  issueLabel,
+  issueFieldValue,
+  issueFieldOption,
+  recurringIssue,
+} from '@repo/db';
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { HttpError } from '#shared/lib';
 import { getMembership } from '#modules/members/service';
@@ -245,6 +253,10 @@ export async function deleteColumn(
       await tx.delete(issueLabel).where(inArray(issueLabel.issueId, issueIds));
       await tx.delete(issue).where(eq(issue.columnId, columnId));
     }
+    await tx
+      .update(recurringIssue)
+      .set({ status: 'paused', nextRunAt: null, updatedAt: new Date() })
+      .where(and(eq(recurringIssue.columnId, columnId), eq(recurringIssue.status, 'active')));
     await tx.delete(projectColumn).where(eq(projectColumn.id, columnId));
     return moved;
   });

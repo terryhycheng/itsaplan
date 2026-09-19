@@ -19,6 +19,7 @@ export interface ScopeKind {
 export const scopeKind: Record<string, ScopeKind> = {
   board: { key: (projectId) => `board:${projectId}`, resource: 'work_items' },
   documents: { key: (projectId) => `documents:${projectId}`, resource: 'documents' },
+  recurring: { key: (projectId) => `recurring:${projectId}`, resource: 'recurring_issues' },
   issue: { key: (issueId) => `issue:${issueId}`, resource: 'work_items' },
   initiative: {
     key: (initiativeId) => `initiative:${initiativeId}`,

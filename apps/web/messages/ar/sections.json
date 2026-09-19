@@ -85,6 +85,10 @@
       "label": "الإعداد",
       "description": "المهام الفرعية بتتقفل إزاي مع المهمة الأصل، والمهام الراكدة بتتأرشف إمتى."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "الإجراءات",
       "description": "أزرار على المهمة بتظبط الحقول بضغطة واحدة."

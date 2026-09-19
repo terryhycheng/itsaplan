@@ -17,6 +17,10 @@ export function memberCandidates(assignees: Assignee[], scope: MemberScope): Ass
   return assignees;
 }
 
+export function isForeignAgent(assignee: Assignee, currentUserId: string | null): boolean {
+  return assignee.restrictedToUserId != null && assignee.restrictedToUserId !== currentUserId;
+}
+
 // The member custom field a `cf:<id>` grouping points at, or null when the grouping
 // names a built-in field (or a field that has since been deleted or retyped).
 export function groupMemberField(

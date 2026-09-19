@@ -19,6 +19,7 @@
     "agent_tools": "أدوات الوكلاء (agent tools)",
     "custom_fields": "الحقول المخصّصة",
     "issue_templates": "قوالب المهام",
+    "recurring_issues": "Recurring issues",
     "workflow_config": "تهيئة سير العمل",
     "actions": "الإجراءات",
     "webhooks": "خطافات الويب (webhooks)",

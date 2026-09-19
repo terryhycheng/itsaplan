@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Avatar from '@/components/common/Avatar';
-import MemberSelect from './MemberSelect';
+import MemberSelect from '@/components/common/fields/MemberSelect';
 import InlineUrlField from './InlineUrlField';
 import InlineTextField from './InlineTextField';
 import { useTranslations } from 'next-intl';

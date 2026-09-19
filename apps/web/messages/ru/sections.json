@@ -85,6 +85,10 @@
       "label": "Конфигурация",
       "description": "Как подзадачи закрываются вместе с родительской и когда устаревшие задачи архивируются."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "Действия",
       "description": "Кнопки на задаче, которые устанавливают поля одним кликом."

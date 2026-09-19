@@ -23,6 +23,7 @@ export type PermissionResource =
   | 'agent_tools'
   | 'custom_fields'
   | 'issue_templates'
+  | 'recurring_issues'
   | 'workflow_config'
   | 'actions'
   | 'webhooks'

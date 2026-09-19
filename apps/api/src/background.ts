@@ -2,6 +2,10 @@ import { intEnv } from '#shared/lib';
 import { agentRunConfig } from '#modules/agents/core/run-queue';
 import { processAgentRuns } from '#modules/agents/core/run-poller';
 import { sweepStaleIssues } from '#modules/issues/auto-archive';
+import {
+  processRecurringIssueOccurrences,
+  recurringIssueRunConfig,
+} from '#modules/recurring-issues/materialize';
 
 // The api's background jobs, started by index.ts rather than assembled into the app,
 // so importing the app in a test starts nothing. Several api replicas run them without
@@ -13,6 +17,11 @@ import { sweepStaleIssues } from '#modules/issues/auto-archive';
 // back for that long.
 export function startBackgroundJobs(): void {
   startLoop('agent-runs', processAgentRuns, agentRunConfig.pollIntervalMs);
+  startLoop(
+    'recurring-issues',
+    processRecurringIssueOccurrences,
+    recurringIssueRunConfig.pollIntervalMs,
+  );
   // Archiving is not time-sensitive, so the sweep runs far less often than the queue
   // is drained.
   startLoop('auto-archive', autoArchive, () => intEnv('AUTO_ARCHIVE_INTERVAL_MS', 3_600_000));

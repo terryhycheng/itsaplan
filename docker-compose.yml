@@ -112,6 +112,10 @@ services:
       # without one. BACKUP_DIR is not among them: the volume below pins it.
       BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-}
       SKIP_PRE_MIGRATION_BACKUP: ${SKIP_PRE_MIGRATION_BACKUP:-}
+      RECURRING_ISSUE_RUN_POLL_INTERVAL_MS: ${RECURRING_ISSUE_RUN_POLL_INTERVAL_MS:-2000}
+      RECURRING_ISSUE_RUN_BATCH_SIZE: ${RECURRING_ISSUE_RUN_BATCH_SIZE:-5}
+      RECURRING_ISSUE_RUN_MAX_ATTEMPTS: ${RECURRING_ISSUE_RUN_MAX_ATTEMPTS:-3}
+      RECURRING_ISSUE_RUN_LEASE_SECONDS: ${RECURRING_ISSUE_RUN_LEASE_SECONDS:-120}
     # Holds the dump migrate.ts takes before it applies a release's migrations, and
     # keeps it for BACKUP_RETENTION_DAYS (30) so a downgrade has something to restore.
     volumes:
@@ -154,6 +158,8 @@ services:
       TELEMETRY_DEBUG: ${TELEMETRY_DEBUG:-}
       # The same list the api reads. This process delivers webhooks to those hosts.
       SSRF_ALLOWED_HOSTS: ${SSRF_ALLOWED_HOSTS:-}
+      RECURRING_ISSUE_SCHEDULE_POLL_INTERVAL_MS: ${RECURRING_ISSUE_SCHEDULE_POLL_INTERVAL_MS:-5000}
+      RECURRING_ISSUE_SCHEDULE_BATCH_SIZE: ${RECURRING_ISSUE_SCHEDULE_BATCH_SIZE:-50}
       # Optional tuning lives in apps/worker/src/config.ts.
 
   # Telegram bot: long polling for the instance bot, completing the account links

@@ -26,6 +26,7 @@
     "timeOverBy": "{time} de dépassement",
     "startDate": "Date de début",
     "dueDate": "Échéance",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "Propriétés",
     "groupState": "État",
     "groupPeople": "Personnes",

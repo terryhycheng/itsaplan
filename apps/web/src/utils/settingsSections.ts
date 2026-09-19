@@ -6,6 +6,7 @@ import {
   GitPullRequest,
   Info,
   ListPlus,
+  Repeat2,
   type LucideIcon,
   Shapes,
   SlidersHorizontal,
@@ -83,6 +84,12 @@ export const SETTINGS_SECTIONS: SettingsSection[] = [
     slug: 'actions',
     icon: Zap,
     resource: 'actions',
+    group: 'automation',
+  },
+  {
+    slug: 'recurring-issues',
+    icon: Repeat2,
+    resource: 'recurring_issues',
     group: 'automation',
   },
   {

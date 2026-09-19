@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from 'react';
-import { RefreshCw, Target } from 'lucide-react';
+import Link from 'next/link';
+import { CalendarClock, RefreshCw, Target } from 'lucide-react';
 import type { CustomField } from '@/lib/api/endpoints/customFields';
 import type { ProjectDetail } from '@/lib/api/endpoints/projects';
 import type {
@@ -17,7 +18,7 @@ import LabelsSelect from '@/components/common/fields/LabelsSelect';
 import PrioritySelect from '@/components/common/fields/PrioritySelect';
 import StatusSelect from '@/components/common/fields/StatusSelect';
 import TypeSelect from '@/components/common/fields/TypeSelect';
-import InitiativeSelect from '../fields/InitiativeSelect';
+import InitiativeSelect from '@/components/common/fields/InitiativeSelect';
 import CycleSelect from '../fields/CycleSelect';
 import CycleHistoryBadge from '../fields/CycleHistoryBadge';
 import EstimatePill from '../fields/EstimatePill';
@@ -32,6 +33,8 @@ import { type Embeddable } from '@/components/common/editor/attachmentEmbed';
 import { parseDate } from '@/utils/dates';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
+import { usePermissions } from '@/hooks/usePermissions';
+import { settingsPath } from '@/utils/paths';
 
 // The Properties grid of the issue detail: built-in fields and non-markdown
 // custom fields, each editable inline. Shaped like the Attachments and Links
@@ -79,6 +82,7 @@ export default function IssueProperties({
   groupsOpen: { isOpen: (key: string) => boolean; toggle: (key: string) => void };
 }) {
   const t = useTranslations('issue.fields');
+  const { can } = usePermissions();
   const hasMembers = project.assignees.some((a) => a.kind === 'member');
   const hasAgents = project.assignees.some((a) => a.kind === 'agent');
   // The calendars grey out days that would put one date on the wrong side of the
@@ -259,6 +263,29 @@ export default function IssueProperties({
             disabled={earliestDue ? { before: earliestDue } : undefined}
           />
         </IssuePropertyRow>,
+
+        issue.recurrenceOrigin && (
+          <IssuePropertyRow key="recurrenceOrigin" label={t('recurrenceOrigin')}>
+            <div className="flex min-w-0 items-center gap-2 text-sm">
+              <CalendarClock className="size-4 shrink-0 text-muted-foreground" />
+              {can('recurring_issues', 'read') ? (
+                <Link
+                  className="truncate hover:underline"
+                  href={settingsPath(project.project.key, 'recurring-issues')}
+                >
+                  {issue.recurrenceOrigin.name}
+                </Link>
+              ) : (
+                <span className="truncate">{issue.recurrenceOrigin.name}</span>
+              )}
+              <span className="shrink-0 text-xs text-muted-foreground">
+                {new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(
+                  new Date(issue.recurrenceOrigin.scheduledFor),
+                )}
+              </span>
+            </div>
+          </IssuePropertyRow>
+        ),
       ],
     },
     {

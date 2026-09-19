@@ -85,6 +85,10 @@
       "label": "Konfigurasi",
       "description": "Cara subtugas ditutup bersama induknya, dan kapan issue usang diarsipkan."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "Tindakan",
       "description": "Tombol pada issue yang mengatur bidang dalam sekali klik."

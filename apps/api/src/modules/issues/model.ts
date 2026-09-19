@@ -292,6 +292,14 @@ export const IssueWithFieldsResponse = t.Composite([
     subtasks: t.Array(IssueRefResponse),
     checklists: t.Array(ChecklistResponse),
     development: t.Array(DevelopmentLinkResponse),
+    recurrenceOrigin: t.Nullable(
+      t.Object({
+        recurringIssueId: t.Number(),
+        name: t.String(),
+        status: t.String(),
+        scheduledFor: t.String(),
+      }),
+    ),
   }),
 ]);
 

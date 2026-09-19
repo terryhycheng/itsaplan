@@ -85,6 +85,10 @@
       "label": "Configuração",
       "description": "Como as subtarefas fecham com seu pai e quando issues paradas são arquivadas."
     },
+    "recurring-issues": {
+      "label": "Recurring issues",
+      "description": "Create independent issues on a daily, weekly, monthly, or yearly schedule."
+    },
     "actions": {
       "label": "Ações",
       "description": "Botões em uma issue que definem campos em um clique."

@@ -26,6 +26,7 @@
     "timeOverBy": "kelebihan {time}",
     "startDate": "Tanggal mulai",
     "dueDate": "Tenggat waktu",
+    "recurrenceOrigin": "Recurring issue",
     "properties": "Properti",
     "groupState": "Status",
     "groupPeople": "Orang",

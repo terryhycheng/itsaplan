@@ -22,7 +22,7 @@ import { useTranslations } from 'next-intl';
 
 // A pill + popover editor for a single non-markdown custom field, used in the
 // new-issue modal where the value is collected before the issue exists.
-export default function IssueCustomFieldPill({
+export default function CustomFieldPill({
   def,
   value,
   assignees,
