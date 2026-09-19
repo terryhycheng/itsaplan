@@ -227,6 +227,7 @@ export const qk = {
   anyCycles: ['cycles'] as const,
   anyCycle: ['cycle'] as const,
   attachments: (id: number) => ['attachments', id] as const,
+  usefulLinks: (id: number) => ['usefulLinks', id] as const,
   initiativeAttachments: (id: number) => ['initiativeAttachments', id] as const,
   // The time entries of one issue. Their sum comes with the issue, so a write
   // refreshes that read too.

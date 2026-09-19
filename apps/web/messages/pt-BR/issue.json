@@ -122,6 +122,7 @@
     "noTemplates": "Sem modelos."
   },
   "attachments": {
+    "sectionTitle": "Anexos e links úteis",
     "title": "Anexos",
     "add": "Adicionar",
     "uploading": "Enviando…",
@@ -149,6 +150,22 @@
     "dropHint": "Adicionados à descrição e anexados à issue",
     "insertShort": "Inserir",
     "attachedCount": "{count, plural, one {# arquivo anexado} other {# arquivos anexados}}"
+  },
+  "usefulLinks": {
+    "title": "Links úteis",
+    "add": "Adicionar link",
+    "adding": "Adicionando…",
+    "addTitle": "Adicionar um link útil",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "Insira uma URL.",
+    "urlTooLong": "A URL deve ter no máximo {max} caracteres.",
+    "loading": "Carregando links úteis…",
+    "loadingPreview": "Carregando prévia…",
+    "previewUnavailable": "Prévia indisponível. Abra o link para ver o destino.",
+    "empty": "Ainda não há links úteis.",
+    "emptyHint": "Use Adicionar link para salvar um destino útil.",
+    "deleteLink": "Excluir o link {url}"
   },
   "checklists": {
     "title": "Checklists",

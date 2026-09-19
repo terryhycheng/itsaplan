@@ -122,6 +122,7 @@
     "noTemplates": "没有模板。"
   },
   "attachments": {
+    "sectionTitle": "附件和实用链接",
     "title": "附件",
     "add": "添加",
     "uploading": "正在上传…",
@@ -149,6 +150,22 @@
     "dropHint": "添加到描述并作为工作项附件",
     "insertShort": "插入",
     "attachedCount": "{count, plural, other {已添加 # 个附件}}"
+  },
+  "usefulLinks": {
+    "title": "实用链接",
+    "add": "添加链接",
+    "adding": "正在添加…",
+    "addTitle": "添加实用链接",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "请输入 URL。",
+    "urlTooLong": "URL 不得超过 {max} 个字符。",
+    "loading": "正在加载实用链接…",
+    "loadingPreview": "正在加载预览…",
+    "previewUnavailable": "预览不可用。请打开链接查看目标页面。",
+    "empty": "暂无实用链接。",
+    "emptyHint": "使用“添加链接”保存实用目标地址。",
+    "deleteLink": "删除链接 {url}"
   },
   "checklists": {
     "title": "检查清单",

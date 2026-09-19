@@ -122,6 +122,7 @@
     "noTemplates": "Sin plantillas."
   },
   "attachments": {
+    "sectionTitle": "Adjuntos y enlaces útiles",
     "title": "Adjuntos",
     "add": "Añadir",
     "uploading": "Subiendo…",
@@ -149,6 +150,22 @@
     "dropHint": "Añadidos a la descripción y adjuntos al ticket",
     "insertShort": "Insertar",
     "attachedCount": "{count, plural, one {# fichero adjunto} other {# ficheros adjuntos}}"
+  },
+  "usefulLinks": {
+    "title": "Enlaces útiles",
+    "add": "Añadir enlace",
+    "adding": "Añadiendo…",
+    "addTitle": "Añadir un enlace útil",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "Introduce una URL.",
+    "urlTooLong": "La URL debe tener {max} caracteres o menos.",
+    "loading": "Cargando enlaces útiles…",
+    "loadingPreview": "Cargando vista previa…",
+    "previewUnavailable": "La vista previa no está disponible. Abre el enlace para ver el destino.",
+    "empty": "Todavía no hay enlaces útiles.",
+    "emptyHint": "Usa Añadir enlace para guardar un destino útil.",
+    "deleteLink": "Eliminar el enlace {url}"
   },
   "checklists": {
     "title": "Listas de verificación",

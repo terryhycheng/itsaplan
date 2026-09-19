@@ -15,6 +15,7 @@ import { revScope } from '@/utils/revScopes';
 import { qk } from '@/services/queryKeys';
 import { useAccountPreferencesQuery } from '@/services/preferences.service';
 import { useAttachmentsQuery, useUploadAttachment } from '../services/attachments.service';
+import { useUsefulLinksQuery } from '../services/useful-links.service';
 import { useFeedQuery, useGroupedFeedQuery, useTimelineQuery } from '../services/comments.service';
 import { attachmentMarkdown, isImage } from '@/components/common/editor/attachmentEmbed';
 import { fieldDefsForType } from '../utils/fieldDefs';
@@ -35,6 +36,7 @@ export function useIssueDetail(
   // issue arrives, which would put these reads in a second wave after it. Only the
   // activity shape the preference opens with is read; the other one waits for a switch.
   const attachmentsQuery = useAttachmentsQuery(issueId);
+  useUsefulLinksQuery(issueId);
   // Undefined until the preferences arrive — the saved shape is read, never the
   // default standing in for it, so neither feed is fetched to be thrown away.
   const activityView = useAccountPreferencesQuery().data?.issueActivityView;
@@ -57,6 +59,8 @@ export function useIssueDetail(
     targets: [
       qk.issue(issueId),
       qk.feed(issueId),
+      qk.attachments(issueId),
+      qk.usefulLinks(issueId),
       qk.issueDocumentLinks(project.project.key, issueId),
     ],
   });

@@ -122,6 +122,7 @@
     "noTemplates": "No templates."
   },
   "attachments": {
+    "sectionTitle": "Attachments and Useful Links",
     "title": "Attachments",
     "add": "Add",
     "uploading": "Uploading…",
@@ -149,6 +150,22 @@
     "dropHint": "Added to the description and attached to the issue",
     "insertShort": "Insert",
     "attachedCount": "{count, plural, one {# file attached} other {# files attached}}"
+  },
+  "usefulLinks": {
+    "title": "Useful Links",
+    "add": "Add link",
+    "adding": "Adding…",
+    "addTitle": "Add a useful link",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "Enter a URL.",
+    "urlTooLong": "URL must be {max} characters or fewer.",
+    "loading": "Loading useful links…",
+    "loadingPreview": "Loading preview…",
+    "previewUnavailable": "Preview unavailable. Open the link to view its destination.",
+    "empty": "No useful links yet.",
+    "emptyHint": "Use Add link to save a useful destination.",
+    "deleteLink": "Delete link {url}"
   },
   "checklists": {
     "title": "Checklists",

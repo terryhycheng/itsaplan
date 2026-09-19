@@ -122,6 +122,7 @@
     "noTemplates": "لا توجد قوالب."
   },
   "attachments": {
+    "sectionTitle": "المرفقات والروابط المفيدة",
     "title": "المرفقات",
     "add": "إضافة",
     "uploading": "جارٍ الرفع…",
@@ -149,6 +150,22 @@
     "dropHint": "بتتضاف للوصف وبتتربط بالمهمة كمرفق",
     "insertShort": "إدراج",
     "attachedCount": "{count, plural, zero {لا ملفات مرفقة} one {ملف واحد مرفق} two {ملفان مرفقان} few {# ملفات مرفقة} many {# ملفًا مرفقًا} other {# ملف مرفق}}"
+  },
+  "usefulLinks": {
+    "title": "روابط مفيدة",
+    "add": "إضافة رابط",
+    "adding": "جارٍ الإضافة…",
+    "addTitle": "إضافة رابط مفيد",
+    "urlLabel": "عنوان URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "أدخل عنوان URL.",
+    "urlTooLong": "يجب ألا يتجاوز عنوان URL ‏{max} حرفًا.",
+    "loading": "جارٍ تحميل الروابط المفيدة…",
+    "loadingPreview": "جارٍ تحميل المعاينة…",
+    "previewUnavailable": "المعاينة غير متاحة. افتح الرابط لعرض الوجهة.",
+    "empty": "لا توجد روابط مفيدة بعد.",
+    "emptyHint": "استخدم إضافة رابط لحفظ وجهة مفيدة.",
+    "deleteLink": "حذف الرابط {url}"
   },
   "checklists": {
     "title": "قوائم التحقّق",

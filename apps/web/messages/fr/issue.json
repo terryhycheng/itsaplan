@@ -122,6 +122,7 @@
     "noTemplates": "Aucun modèle."
   },
   "attachments": {
+    "sectionTitle": "Pièces jointes et liens utiles",
     "title": "Pièces jointes",
     "add": "Ajouter",
     "uploading": "Envoi…",
@@ -149,6 +150,22 @@
     "dropHint": "Ajoutés à la description et joints au ticket",
     "insertShort": "Insérer",
     "attachedCount": "{count, plural, one {# fichier joint} other {# fichiers joints}}"
+  },
+  "usefulLinks": {
+    "title": "Liens utiles",
+    "add": "Ajouter un lien",
+    "adding": "Ajout…",
+    "addTitle": "Ajouter un lien utile",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "Saisissez une URL.",
+    "urlTooLong": "L’URL doit contenir au maximum {max} caractères.",
+    "loading": "Chargement des liens utiles…",
+    "loadingPreview": "Chargement de l’aperçu…",
+    "previewUnavailable": "Aucun aperçu disponible. Ouvrez le lien pour voir sa destination.",
+    "empty": "Aucun lien utile pour le moment.",
+    "emptyHint": "Utilisez Ajouter un lien pour enregistrer une destination utile.",
+    "deleteLink": "Supprimer le lien {url}"
   },
   "checklists": {
     "title": "Checklists",

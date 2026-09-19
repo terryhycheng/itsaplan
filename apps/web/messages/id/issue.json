@@ -122,6 +122,7 @@
     "noTemplates": "Tidak ada templat."
   },
   "attachments": {
+    "sectionTitle": "Lampiran dan Tautan Berguna",
     "title": "Lampiran",
     "add": "Tambah",
     "uploading": "Mengunggah…",
@@ -149,6 +150,22 @@
     "dropHint": "Ditambahkan ke deskripsi dan dilampirkan ke issue",
     "insertShort": "Sisipkan",
     "attachedCount": "{count, plural, one {# file terlampir} other {# file terlampir}}"
+  },
+  "usefulLinks": {
+    "title": "Tautan Berguna",
+    "add": "Tambah tautan",
+    "adding": "Menambahkan…",
+    "addTitle": "Tambah tautan berguna",
+    "urlLabel": "URL",
+    "urlPlaceholder": "https://example.com",
+    "urlRequired": "Masukkan URL.",
+    "urlTooLong": "URL harus terdiri dari {max} karakter atau kurang.",
+    "loading": "Memuat tautan berguna…",
+    "loadingPreview": "Memuat pratinjau…",
+    "previewUnavailable": "Pratinjau tidak tersedia. Buka tautan untuk melihat tujuannya.",
+    "empty": "Belum ada tautan berguna.",
+    "emptyHint": "Gunakan Tambah tautan untuk menyimpan tujuan yang berguna.",
+    "deleteLink": "Hapus tautan {url}"
   },
   "checklists": {
     "title": "Daftar periksa",

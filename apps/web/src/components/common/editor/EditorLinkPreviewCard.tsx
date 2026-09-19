@@ -25,10 +25,14 @@ export default function EditorLinkPreviewCard({
   url,
   preview,
   loading,
+  loadingLabel,
+  unavailableLabel,
 }: {
   url: string;
   preview: ResolvedLinkPreview | undefined;
   loading: boolean;
+  loadingLabel?: string;
+  unavailableLabel?: string;
 }) {
   const t = useTranslations('common.editor');
   const host = new URL(url).hostname.replace(/^www\./, '');
@@ -62,7 +66,7 @@ export default function EditorLinkPreviewCard({
                 className="size-3 animate-spin motion-reduce:animate-none"
                 aria-hidden="true"
               />
-              {t('loadingPreview')}
+              {loadingLabel ?? t('loadingPreview')}
             </span>
           </div>
         ) : (
@@ -77,7 +81,8 @@ export default function EditorLinkPreviewCard({
             )}
             {!preview?.title && !preview?.description && (
               <p className="text-xs text-pretty text-muted-foreground">
-                {internal ? t('internalPreviewUnavailable') : t('previewUnavailable')}
+                {unavailableLabel ??
+                  (internal ? t('internalPreviewUnavailable') : t('previewUnavailable'))}
               </p>
             )}
             {preview?.kind && <EditorLinkPreviewDetails preview={preview} />}

@@ -22,11 +22,11 @@ async function preloadImage(src: string, signal: AbortSignal) {
   });
 }
 
-export function useLinkPreviewQuery(url: string | undefined) {
+export function useLinkPreviewQuery(url: string | undefined, queryEnabled = true) {
   const { data: session, isPending: sessionPending } = useSession();
   const internal =
     !!url && typeof window !== 'undefined' && new URL(url).origin === window.location.origin;
-  const enabled = !!url && !!session?.user.id;
+  const enabled = queryEnabled && !!url && !!session?.user.id;
   const query = useQuery({
     queryKey: ['link-preview', session?.user.id, url],
     enabled,
