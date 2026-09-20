@@ -75,7 +75,7 @@ services:
       "
 
   api:
-    image: ghcr.io/croffasia/itsaplan-api:latest
+    image: ghcr.io/terryhycheng/itsaplan-api:latest
     restart: unless-stopped
     depends_on:
       postgres:
@@ -132,7 +132,7 @@ services:
   # Background worker for webhook delivery, agent schedules, and autonomous agent
   # runs. Shares the database with the api. No public ports, so nothing to probe.
   worker:
-    image: ghcr.io/croffasia/itsaplan-worker:latest
+    image: ghcr.io/terryhycheng/itsaplan-worker:latest
     restart: unless-stopped
     # exclude_from_hc: true
     depends_on:
@@ -170,7 +170,7 @@ services:
   # Must stay at one replica: Telegram hands each getUpdates call to a single caller,
   # so a second instance would take updates away from the first.
   bot:
-    image: ghcr.io/croffasia/itsaplan-bot:latest
+    image: ghcr.io/terryhycheng/itsaplan-bot:latest
     restart: unless-stopped
     # exclude_from_hc: true
     depends_on:
@@ -186,7 +186,7 @@ services:
       # BOT_CONFIG_POLL_INTERVAL_MS, BOT_CONFIG_RETRY_INTERVAL_MS.
 
   web:
-    image: ghcr.io/croffasia/itsaplan-web
+    image: ghcr.io/terryhycheng/itsaplan-web
     restart: unless-stopped
     depends_on:
       - api
