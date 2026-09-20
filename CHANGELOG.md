@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/terryhycheng/itsaplan/compare/v1.1.0...v1.1.1) (2026-09-20)
+
+
+### CI
+
+* update docker-compose.dokploy.yml ([7d6409c](https://github.com/terryhycheng/itsaplan/commit/7d6409ce8f476f08184637b8cdf5573049089b86))
+
 ## [1.1.0](https://github.com/terryhycheng/itsaplan/compare/v1.0.0...v1.1.0) (2026-09-19)
 
 
